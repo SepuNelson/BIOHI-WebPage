@@ -1,0 +1,50 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/sora';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+// Sites replaces this build-time sentinel with the trusted request origin in
+// the Cloudflare Worker, keeping canonical and social URLs absolute.
+const publicOrigin = Astro.site ?? new URL('https://site-origin.invalid');
+const canonicalUrl = new URL(Astro.url.pathname, publicOrigin);
+const socialImage = new URL('/og.png', publicOrigin);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#08110E" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content="inteligencia microbiológica, resistencia antimicrobiana, RAM, PROA, microbiología clínica, vigilancia hospitalaria, healthtech, datos microbiológicos" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CL" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="BIOHI — Inteligencia microbiológica para actuar a tiempo" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content="BIOHI — Inteligencia microbiológica para actuar a tiempo" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
