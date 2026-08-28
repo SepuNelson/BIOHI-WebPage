@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+
+const title = 'Página no encontrada | BIOHI';
+const description = 'La página que buscas no existe o cambió de dirección. Vuelve al inicio de BIOHI.';
+---
+
+<BaseLayout {title} {description} noindex>
+  <main class="error-page">
+    <div class="container">
+      <p class="error-code">404</p>
+      <h1>Esta página no está en la red.</h1>
+      <p>La dirección que abriste no existe o cambió de nombre. El resto de BIOHI sigue en pie.</p>
+      <div class="hero-actions">
+        <a class="button" href="/">Volver al inicio<Icon name="arrow-up-left" class="icon button-icon" /></a>
+      </div>
+      <div class="tagline-meta" style="justify-content: center">
+        <a href="/#solucion"><span>La plataforma</span></a>
+        <a href="/#faq"><span>Preguntas</span></a>
+        <a href="/#contacto"><span>Contacto</span></a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

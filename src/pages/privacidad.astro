@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+
+const title = 'Política de privacidad | BIOHI';
+const description = 'Cómo trata BIOHI la información en este sitio: formulario demostrativo, datos anonimizados y contacto para consultas.';
+---
+
+<BaseLayout {title} {description}>
+  <main class="legal-page">
+    <div class="container">
+      <p class="eyebrow"><span></span> Legal</p>
+      <h1 style="max-width: 680px; background-image: none; color: var(--paper)">Política de privacidad</h1>
+      <p class="legal-updated">Última actualización: 26 de agosto de 2026</p>
+
+      <div class="legal-body">
+        <h2>Alcance</h2>
+        <p>Esta política cubre el sitio público de BIOHI. No cubre instalaciones de la plataforma dentro de un hospital, que se rigen por el acuerdo firmado con cada institución.</p>
+
+        <h2>Formulario de contacto</h2>
+        <p>El formulario de este sitio está en versión demostrativa: el canal de envío institucional todavía no está conectado. Los datos que escribes no se transmiten ni se almacenan en ningún servidor. Mientras esa conexión no exista, la vía formal de contacto es el correo del equipo.</p>
+
+        <h2>Datos microbiológicos</h2>
+        <p>BIOHI trabaja con datos sintéticos o previamente anonimizados. La plataforma no requiere ni almacena identificadores directos de pacientes, como nombre, RUT o número de ficha. Los registros que procesa corresponden a resultados de cultivo y susceptibilidad antimicrobiana asociados a un establecimiento y un período.</p>
+        <ul>
+          <li>Acceso segmentado por roles según la función de cada perfil.</li>
+          <li>Bitácoras de las acciones relevantes para auditoría y trazabilidad.</li>
+          <li>Cada análisis conserva universo consultado, filtros y regla aplicada.</li>
+        </ul>
+
+        <h2>Analítica del sitio</h2>
+        <p>Este sitio no instala cookies de publicidad ni de seguimiento entre sitios. Si en el futuro se incorpora medición de tráfico, se informará en esta misma página antes de activarla.</p>
+
+        <h2>Tus derechos</h2>
+        <p>Puedes solicitar información sobre el tratamiento de datos asociados a tu institución, pedir su rectificación o solicitar su eliminación. En Chile, estos derechos se enmarcan en la Ley 19.628 sobre protección de la vida privada y en la normativa sectorial de salud aplicable.</p>
+
+        <h2>Contacto</h2>
+        <p>Para cualquier consulta sobre esta política, escríbenos desde la sección de contacto del sitio y respondemos con el detalle que necesites.</p>
+      </div>
+
+      <div class="hero-actions" style="margin-top: 48px">
+        <a class="button" href="/">Volver al inicio<Icon name="arrow-up-left" class="icon button-icon" /></a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

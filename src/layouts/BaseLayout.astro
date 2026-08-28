@@ -1,14 +1,15 @@
 ---
-import '@fontsource-variable/inter';
-import '@fontsource-variable/sora';
+import '@fontsource-variable/manrope';
 import '../styles/global.css';
 
 interface Props {
   title: string;
   description: string;
+  noindex?: boolean;
+  jsonLd?: unknown;
 }
 
-const { title, description } = Astro.props;
+const { title, description, noindex = false, jsonLd } = Astro.props;
 // Sites replaces this build-time sentinel with the trusted request origin in
 // the Cloudflare Worker, keeping canonical and social URLs absolute.
 const publicOrigin = Astro.site ?? new URL('https://site-origin.invalid');
@@ -20,12 +21,12 @@ const socialImage = new URL('/og.png', publicOrigin);
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#08110E" />
     <meta name="description" content={description} />
     <meta name="keywords" content="inteligencia microbiológica, resistencia antimicrobiana, RAM, PROA, microbiología clínica, vigilancia hospitalaria, healthtech, datos microbiológicos" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_CL" />
@@ -43,6 +44,7 @@ const socialImage = new URL('/og.png', publicOrigin);
     <meta name="twitter:image:alt" content="BIOHI — Inteligencia microbiológica para actuar a tiempo" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body>
     <slot />

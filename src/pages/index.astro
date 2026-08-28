@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 
 const title = 'BIOHI | Inteligencia Microbiológica para Hospitales';
 const description = 'BIOHI transforma datos microbiológicos en información útil para vigilancia, equipos PROA y gestión hospitalaria mediante integración, normalización y analítica multicentro.';
@@ -9,11 +10,102 @@ const navItems = [
   ['Problema', '#problema'],
   ['Solución', '#solucion'],
   ['Impacto', '#impacto'],
+  ['Preguntas', '#faq'],
   ['Contacto', '#contacto'],
 ];
 
+// B11 — tagline reveal. Words light up one at a time in reading order.
+const taglineLines = [
+  'Los datos ya existen dentro de tu hospital.',
+  'BIOHI los vuelve comparables, trazables y listos para la próxima reunión PROA.',
+];
+const taglineAccent = new Set(['BIOHI', 'comparables,', 'trazables']);
+
+// A4 — risk reversal.
+const assurances = [
+  ['seal-check', 'Revisión inicial sin costo', 'Analizamos una muestra de tus registros y devolvemos un informe de factibilidad antes de cualquier compromiso.'],
+  ['shield-check', 'Piloto acotado', 'Partimos con un establecimiento y un período definido. Si no entrega evidencia útil, no se escala.'],
+  ['lock-key', 'Tus datos siguen siendo tuyos', 'Trabajamos sobre datos anonimizados y puedes solicitar su eliminación en cualquier momento.'],
+];
+
+// A2 / A7 — FAQ, written plainly so it also answers well in search.
+const faqItems = [
+  [
+    '¿BIOHI reemplaza el sistema de laboratorio del hospital?',
+    'No. BIOHI se conecta sobre lo que ya existe. Recibe datos de cultivos y antibiogramas desde el LIS u otras fuentes, los normaliza a un modelo común y agrega la capa de vigilancia y analítica. El sistema de laboratorio sigue operando igual.',
+  ],
+  [
+    '¿Qué datos necesita BIOHI para funcionar?',
+    'Registros de cultivo y susceptibilidad antimicrobiana: microorganismo, antibiótico, interpretación, tipo de muestra, fecha y establecimiento. Trabajamos con datos sintéticos o previamente anonimizados, sin identificadores directos de pacientes.',
+  ],
+  [
+    '¿Cómo se manejan los datos de pacientes?',
+    'BIOHI opera sobre datos anonimizados: no almacena nombres, RUT ni identificadores directos. El acceso es por roles, las acciones relevantes quedan registradas en bitácora y cada análisis conserva el universo consultado, los filtros y la regla aplicada.',
+  ],
+  [
+    '¿Qué pasa si cada hospital nombra distinto los microorganismos y antibióticos?',
+    'Es el caso habitual y por eso la homologación es parte del proceso. BIOHI mapea las nomenclaturas locales a un modelo común y conserva el valor original de cada registro para mantener la trazabilidad.',
+  ],
+  [
+    '¿Cuánto demora una integración?',
+    'Depende de la calidad y del formato de origen. Una carga estructurada inicial permite ver indicadores en pocas semanas. La conexión automatizada con el LIS se define caso a caso durante el levantamiento técnico.',
+  ],
+  [
+    '¿Sirve para un solo hospital o necesito una red?',
+    'Funciona con un establecimiento. El modelo común está diseñado para que, cuando se sumen otros centros, la comparación entre establecimientos y territorios no obligue a rehacer el trabajo ya hecho.',
+  ],
+  [
+    '¿BIOHI decide qué antibiótico indicar?',
+    'No. BIOHI no emite indicaciones terapéuticas ni reemplaza el juicio clínico. Entrega evidencia local estructurada, explicable y trazable para que microbiología y los equipos PROA la revisen y decidan.',
+  ],
+  [
+    '¿En qué etapa está el producto?',
+    'En desarrollo y validación progresiva junto a profesionales vinculados a PROA, microbiología hospitalaria y actores del ecosistema de diagnóstico. Las conversaciones actuales son de levantamiento y pilotaje.',
+  ],
+];
+
+// A7 — Rich Schema graph (Organization, SoftwareApplication, WebSite, FAQPage) for answer engines and SEO.
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': 'https://biohi.cl/#organization',
+      name: 'BIOHI',
+      url: 'https://biohi.cl',
+      logo: 'https://biohi.cl/biohi-logo.svg',
+      description: 'Plataforma de inteligencia microbiológica para hospitales y redes asistenciales.',
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': 'https://biohi.cl/#software',
+      name: 'BIOHI',
+      applicationCategory: 'HealthApplication',
+      operatingSystem: 'Web',
+      description: 'Inteligencia microbiológica para vigilancia hospitalaria, equipos PROA y gestión asistencial.',
+      publisher: { '@id': 'https://biohi.cl/#organization' },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://biohi.cl/#website',
+      url: 'https://biohi.cl',
+      name: 'BIOHI',
+      publisher: { '@id': 'https://biohi.cl/#organization' },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': 'https://biohi.cl/#faq',
+      mainEntity: faqItems.map(([question, answer]) => ({
+        '@type': 'Question',
+        name: question,
+        acceptedAnswer: { '@type': 'Answer', text: answer },
+      })),
+    },
+  ],
+};
+
 const teamAreas = [
-  ['01', 'Producto', 'Visión, priorización y validación del valor clínico-operativo.'],
+  ['01', 'Producto', 'Visión, priorización y validación del valor clínico y operativo.'],
   ['02', 'Tecnología', 'Arquitectura, integración y evolución segura de la plataforma.'],
   ['03', 'Datos y testing', 'Calidad, normalización, indicadores y verificación.'],
   ['04', 'Diseño y UX', 'Experiencias explicables para contextos de alta exigencia.'],
@@ -103,10 +195,10 @@ const differentiators = [
 ];
 ---
 
-<BaseLayout {title} {description}>
+<BaseLayout {title} {description} jsonLd={structuredData}>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-  <header class="site-header" data-header>
+  <header class="site-header" data-header data-open="false">
     <div class="container nav-shell">
       <a class="brand" href="#inicio" aria-label="BIOHI, volver al inicio">
         <img src="/biohi-logo.svg" width="126" height="39" alt="BIOHI" />
@@ -124,8 +216,10 @@ const differentiators = [
     </div>
 
     <nav id="mobile-menu" class="mobile-nav" aria-label="Navegación móvil" data-mobile-menu hidden>
-      {navItems.map(([label, href]) => <a href={href}>{label}</a>)}
-      <a class="mobile-nav-cta" href="#contacto">Conversemos <span aria-hidden="true">↘</span></a>
+      {navItems.map(([label, href]) => (
+        <a href={href}>{label}<Icon name="arrow-up-right" class="icon" /></a>
+      ))}
+      <a class="mobile-nav-cta" href="#contacto">Conversemos<Icon name="arrow-down-right" class="icon" /></a>
     </nav>
   </header>
 
@@ -136,11 +230,10 @@ const differentiators = [
       <div class="container hero-grid">
         <div class="hero-copy" data-reveal>
           <p class="eyebrow"><span></span> Inteligencia microbiológica</p>
-          <h1 id="hero-title">Transformamos datos microbiológicos en <em>inteligencia para actuar a tiempo.</em></h1>
+          <h1 id="hero-title">Transformamos datos<br />microbiológicos en<br /><em>inteligencia para<br />actuar a tiempo.</em></h1>
           <p class="hero-lead">BIOHI integra, normaliza y analiza datos microbiológicos de distintos establecimientos para convertir información dispersa en evidencia útil para vigilancia, equipos PROA y gestión hospitalaria.</p>
           <div class="hero-actions">
-            <a class="button" href="#solucion">Conoce BIOHI <span aria-hidden="true">↘</span></a>
-            <a class="button button-secondary" href="#contacto">Conversemos</a>
+            <a class="button" href="#contacto">Conversemos con el equipo<Icon name="arrow-down-right" class="icon button-icon" /></a>
           </div>
           <div class="trust-line" aria-label="Principios de BIOHI">
             <span>Multicentro</span><i></i><span>Trazable</span><i></i><span>Apoyo a PROA</span>
@@ -171,7 +264,7 @@ const differentiators = [
 
       <div class="container hero-footer">
         <span>Microbiología clínica</span>
-        <a class="scroll-cue" href="#quienes-somos">Explorar plataforma <i aria-hidden="true">↓</i></a>
+        <a class="scroll-cue" href="#quienes-somos">Explorar plataforma<Icon name="arrow-down" class="icon icon-sm" /></a>
         <span>Chile · 2026</span>
       </div>
     </section>
@@ -181,7 +274,7 @@ const differentiators = [
         <div class="section-intro split-heading" data-reveal>
           <div>
             <p class="eyebrow"><span></span> BIOHI</p>
-            <p class="section-index">01 / 05</p>
+            <p class="section-index">01 / 06</p>
           </div>
           <div>
             <h2 id="about-title">Una nueva capa de inteligencia para microbiología clínica.</h2>
@@ -192,17 +285,12 @@ const differentiators = [
         <div class="about-editorial" data-reveal>
           <div class="editorial-label">Qué es BIOHI</div>
           <div class="editorial-copy">
-            <p>Los hospitales generan cada día cultivos, antibiogramas y resultados de susceptibilidad antimicrobiana. Sin embargo, esa información puede permanecer distribuida entre sistemas, formatos y establecimientos distintos.</p>
-            <p>Nuestra propuesta conecta integración de datos, normalización microbiológica, vigilancia y analítica en una misma plataforma, con foco en apoyar a microbiología, equipos clínicos, PROA y gestión institucional.</p>
+            <p>Los hospitales generan cada día cultivos, antibiogramas y resultados de susceptibilidad, pero esa información queda repartida entre sistemas, formatos y establecimientos distintos.</p>
+            <p>BIOHI conecta integración, normalización, vigilancia y analítica en una sola plataforma, para microbiología, equipos clínicos, PROA y gestión.</p>
           </div>
-          <p class="editorial-statement">Del dato aislado<br /><strong>a la evidencia local.</strong></p>
+          <p class="editorial-statement">Del dato aislado<br /><strong>a la evidencia local.</strong><br /><span>Y de ahí a vigilancia multicentro.</span></p>
         </div>
 
-        <div class="vision-block" data-reveal>
-          <div class="vision-topline"><span>Nuestra visión</span><span>INFRAESTRUCTURA MULTICENTRO</span></div>
-          <blockquote>Convertir datos microbiológicos dispersos en una infraestructura de inteligencia capaz de fortalecer la vigilancia y la respuesta hospitalaria frente a la resistencia antimicrobiana.</blockquote>
-          <p>Evolucionar desde análisis aislados hacia una capacidad multicentro que permita comprender tendencias locales y territoriales, detectar señales relevantes y aprovechar mejor la información existente.</p>
-        </div>
 
         <div class="team-block">
           <div class="team-heading" data-reveal>
@@ -212,13 +300,9 @@ const differentiators = [
             </div>
             <p>BIOHI es desarrollado por un equipo de Ingeniería Civil Informática de la Universidad Técnica Federico Santa María, con responsabilidades distribuidas en producto, tecnología, datos, seguridad, experiencia y comunicación.</p>
           </div>
-          <div class="team-grid">
-            {teamAreas.map(([number, area, copy], index) => (
-              <article class="team-card" data-reveal data-delay={String((index % 3) * 70)}>
-                <span>{number}</span>
-                <h4>{area}</h4>
-                <p>{copy}</p>
-              </article>
+          <div class="team-areas">
+            {teamAreas.map(([number, area]) => (
+              <span><i>{number}</i>{area}</span>
             ))}
           </div>
           <p class="pending-note">Los perfiles personales y sus enlaces profesionales se publicarán cuando exista autorización individual.</p>
@@ -231,19 +315,11 @@ const differentiators = [
         <div class="section-intro split-heading" data-reveal>
           <div>
             <p class="eyebrow"><span></span> El desafío</p>
-            <p class="section-index">02 / 05</p>
+            <p class="section-index">02 / 06</p>
           </div>
           <div>
             <h2 id="problem-title">Los datos existen. El problema es convertirlos en información útil.</h2>
-            <p class="section-lead">La resistencia antimicrobiana exige decisiones más rápidas, informadas y ajustadas a la realidad local. Los hospitales ya generan datos valiosos; su fragmentación limita la capacidad de analizarlos a tiempo.</p>
-          </div>
-        </div>
-
-        <div class="problem-definition" data-reveal>
-          <p class="subeyebrow">Resistencia antimicrobiana</p>
-          <div>
-            <h3>La resistencia no se interpreta sin contexto.</h3>
-            <p>La resistencia a los antimicrobianos ocurre cuando los microorganismos dejan de responder adecuadamente a tratamientos que antes eran efectivos. Esto dificulta el abordaje de infecciones y vuelve esencial contar con vigilancia, monitoreo y evidencia microbiológica local.</p>
+            <p class="section-lead">La resistencia antimicrobiana ocurre cuando los microorganismos dejan de responder a tratamientos que antes eran efectivos, y exige decisiones más rápidas y ajustadas a la realidad local. Los hospitales ya generan los datos que permitirían tomarlas; su fragmentación limita la capacidad de analizarlos a tiempo.</p>
           </div>
         </div>
 
@@ -253,7 +329,7 @@ const differentiators = [
               <span class="metric-number">0{index + 1}</span>
               <strong>{metric.value}</strong>
               <p>{metric.label}</p>
-              <a href={metric.href} target="_blank" rel="noreferrer">{metric.source} <span aria-hidden="true">↗</span></a>
+              <a href={metric.href} target="_blank" rel="noreferrer">{metric.source}<Icon name="arrow-up-right" class="icon icon-sm" /></a>
             </article>
           ))}
         </div>
@@ -264,6 +340,11 @@ const differentiators = [
             <p class="subeyebrow">Datos microbiológicos dispersos</p>
             <h3>El problema no es la ausencia de datos.</h3>
             <p>Laboratorio y microbiología generan información todos los días, pero puede quedar distribuida entre sistemas, archivos, nomenclaturas y establecimientos distintos. Antes de analizarla, los equipos deben buscar, consolidar, validar y homologar.</p>
+          </div>
+          <div class="fragment-consequences">
+            {problemCards.map(([tag, heading, copy]) => (
+              <div><span>{tag}</span><strong>{heading}</strong><small>{copy}</small></div>
+            ))}
           </div>
           <div class="fragment-diagram" aria-label="Laboratorios y hospital alimentan datos fragmentados que requieren consolidación manual">
             <div class="source-stack">
@@ -278,26 +359,8 @@ const differentiators = [
               <small>buscar · limpiar · homologar</small>
             </div>
           </div>
-          <div class="consequence-line" aria-label="Consecuencias de la fragmentación">
-            <span>Menor oportunidad de análisis</span><i>→</i><span>Detección tardía de tendencias</span><i>→</i><span>Menos evidencia local aprovechada</span>
-          </div>
         </div>
 
-        <div class="hospital-impact">
-          <div class="subsection-heading" data-reveal>
-            <p class="subeyebrow">Impacto en hospitales y PROA</p>
-            <h3>Cuando la información no está integrada, el costo también es operativo.</h3>
-          </div>
-          <div class="problem-card-grid">
-            {problemCards.map(([tag, heading, copy], index) => (
-              <article class="problem-card" data-reveal data-delay={String(index * 70)}>
-                <span>{tag}</span>
-                <h4>{heading}</h4>
-                <p>{copy}</p>
-              </article>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
 
@@ -306,7 +369,7 @@ const differentiators = [
         <div class="section-intro split-heading" data-reveal>
           <div>
             <p class="eyebrow"><span></span> La plataforma</p>
-            <p class="section-index">03 / 05</p>
+            <p class="section-index">03 / 06</p>
           </div>
           <div>
             <h2 id="solution-title">De datos dispersos a inteligencia microbiológica.</h2>
@@ -329,10 +392,9 @@ const differentiators = [
             <div class="capability-head">
               <span>01 / Integración</span>
               <h3>Distintos formatos.<br /><em>Un lenguaje común.</em></h3>
-              <p>Diferentes hospitales pueden utilizar nomenclaturas, formatos y estructuras distintas. BIOHI construye un modelo común para hacer comparable esa información.</p>
             </div>
             <ul class="check-list">
-              {integrationItems.map((item) => <li><span aria-hidden="true">✓</span>{item}</li>)}
+              {integrationItems.map((item) => <li><Icon name="check" class="icon icon-sm" />{item}</li>)}
             </ul>
           </article>
 
@@ -340,16 +402,15 @@ const differentiators = [
             <div class="capability-head">
               <span>02 / Analítica</span>
               <h3>Comprender el comportamiento, <em>no solo visualizarlo.</em></h3>
-              <p>Una vez normalizados los datos, BIOHI permite explorar el comportamiento microbiológico mediante indicadores, filtros y análisis segmentados.</p>
             </div>
             <ul class="check-list">
-              {analyticsItems.map((item) => <li><span aria-hidden="true">✓</span>{item}</li>)}
+              {analyticsItems.map((item) => <li><Icon name="check" class="icon icon-sm" />{item}</li>)}
             </ul>
           </article>
         </div>
 
         <aside class="clinical-note" data-reveal>
-          <span class="clinical-note-mark">!</span>
+          <span class="clinical-note-mark"><Icon name="warning" class="icon" /></span>
           <p><strong>BIOHI no busca reemplazar el juicio clínico.</strong> Busca fortalecerlo con información mejor estructurada, explicable y trazable.</p>
           <span class="clinical-note-label">PRINCIPIO DE DISEÑO</span>
         </aside>
@@ -358,7 +419,7 @@ const differentiators = [
           <div class="product-copy">
             <p class="subeyebrow">Producto</p>
             <h3>Una interfaz diseñada para comprender, no solo visualizar.</h3>
-            <p>La plataforma centraliza indicadores microbiológicos para explorar tendencias, segmentar información y revisar alertas sin depender de procesos manuales adicionales.</p>
+            <p>Indicadores, tendencias y alertas en un solo lugar, sin procesos manuales adicionales.</p>
             <ul>
               <li><span>01</span> Indicadores y tendencia</li>
               <li><span>02</span> Segmentación con contexto</li>
@@ -416,18 +477,33 @@ const differentiators = [
           </div>
         </div>
 
-        <div class="alerts-trace">
-          <div class="alerts-copy" data-reveal>
+        <div class="trace-strip" data-reveal>
+          <div>
             <p class="subeyebrow">Alertas y trazabilidad</p>
             <h3>Una alerta debe explicar por qué existe.</h3>
-            <p>BIOHI incorpora reglas de vigilancia para destacar resistencia sobre umbrales definidos, combinaciones críticas, cambios relevantes de tendencia y escenarios que requieren revisión PROA.</p>
           </div>
-          <div class="trace-panel" data-reveal data-delay="100">
-            <div class="trace-head"><span>CONTEXTO DEL ANÁLISIS</span><span class="status-chip">Trazable</span></div>
-            <div class="trace-tags">
-              {traceabilityTags.map((tag, index) => <span><i>0{index + 1}</i>{tag}</span>)}
-            </div>
+          <div class="trace-strip-tags">
+            {traceabilityTags.map((tag) => <span>{tag}</span>)}
           </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="tagline-section" aria-label="La propuesta de BIOHI en una frase">
+      <div class="container">
+        <p class="tagline-copy" data-tagline>
+          {taglineLines.map((line, lineIndex) => (
+            <span class="tagline-line">
+              {line.split(' ').map((word) => (
+                <span class={`tagline-word${taglineAccent.has(word) ? ' tagline-accent' : ''}`}>{word}{' '}</span>
+              ))}
+              {lineIndex === 0 && <br />}
+            </span>
+          ))}
+        </p>
+        <div class="tagline-meta">
+          <span>Integrar</span><span>Normalizar</span><span>Vigilar</span><span>Comparar</span>
         </div>
       </div>
     </section>
@@ -455,11 +531,11 @@ const differentiators = [
         <div class="section-intro split-heading" data-reveal>
           <div>
             <p class="eyebrow"><span></span> Impacto</p>
-            <p class="section-index">04 / 05</p>
+            <p class="section-index">04 / 06</p>
           </div>
           <div>
             <h2 id="impact-title">Información mejor aprovechada. Decisiones mejor respaldadas.</h2>
-            <p class="section-lead">El valor de BIOHI no está únicamente en centralizar información, sino en reducir la distancia entre los datos microbiológicos y su utilización práctica.</p>
+            <p class="section-lead">BIOHI reduce la distancia entre el dato microbiológico y su uso práctico.</p>
           </div>
         </div>
 
@@ -467,13 +543,13 @@ const differentiators = [
           <div class="benefit-column" data-reveal>
             <div class="benefit-column-head"><span>01</span><div><small>Beneficios clínicos</small><h3>Más contexto para revisar.</h3></div></div>
             <div class="benefit-list">
-              {clinicalBenefits.map(([heading, copy]) => <article><h4>{heading}</h4><p>{copy}</p><span aria-hidden="true">↗</span></article>)}
+              {clinicalBenefits.map(([heading, copy]) => <article><h4>{heading}</h4><p>{copy}</p><Icon name="arrow-up-right" class="icon icon-sm" /></article>)}
             </div>
           </div>
           <div class="benefit-column" data-reveal data-delay="100">
             <div class="benefit-column-head"><span>02</span><div><small>Beneficios operativos</small><h3>Menos fricción para analizar.</h3></div></div>
             <div class="benefit-list">
-              {operationalBenefits.map(([heading, copy]) => <article><h4>{heading}</h4><p>{copy}</p><span aria-hidden="true">↗</span></article>)}
+              {operationalBenefits.map(([heading, copy]) => <article><h4>{heading}</h4><p>{copy}</p><Icon name="arrow-up-right" class="icon icon-sm" /></article>)}
             </div>
           </div>
         </div>
@@ -481,8 +557,8 @@ const differentiators = [
         <div class="multicenter-block" data-reveal>
           <div class="multicenter-copy">
             <p class="subeyebrow">Vigilancia multicentro</p>
-            <h3>El potencial aparece cuando los datos dejan de analizarse únicamente dentro de cada hospital.</h3>
-            <p>BIOHI está pensado para utilizar un modelo común y comparar información microbiológica entre establecimientos y territorios.</p>
+            <h3>El salto ocurre cuando los datos<br />dejan de mirarse hospital por hospital.</h3>
+            <p>Un modelo común para comparar entre establecimientos y territorios.</p>
             <strong>Comparar · Detectar · Anticipar · Coordinar</strong>
           </div>
           <div class="multicenter-map" aria-label="Cinco hospitales conectados con BIOHI para producir inteligencia multicentro">
@@ -494,20 +570,12 @@ const differentiators = [
           </div>
         </div>
 
-        <div class="differentiation-block">
-          <div class="subsection-heading" data-reveal>
-            <p class="subeyebrow">Diferenciación</p>
-            <h3>Una plataforma diseñada para conectar capas que hoy funcionan separadas.</h3>
-            <p>BIOHI no busca competir únicamente como software de laboratorio ni como un dashboard adicional. Su propuesta combina integración, normalización, vigilancia, analítica, trazabilidad y apoyo a PROA sobre una misma base.</p>
-          </div>
-          <div class="differentiator-grid">
-            {differentiators.map(([heading, copy], index) => (
-              <article data-reveal data-delay={String(index * 70)}><span>0{index + 1}</span><h4>{heading}</h4><p>{copy}</p></article>
-            ))}
-          </div>
+        <div class="differentiator-grid" data-reveal>
+          {differentiators.map(([heading, copy], index) => (
+            <article><span>0{index + 1}</span><h4>{heading}</h4><p>{copy}</p></article>
+          ))}
         </div>
 
-        <blockquote class="closing-quote" data-reveal>“No proponemos solamente otro software de laboratorio. Construimos una infraestructura digital para convertir datos microbiológicos en inteligencia útil para vigilancia y toma de decisiones.”</blockquote>
       </div>
     </section>
 
@@ -526,6 +594,45 @@ const differentiators = [
       </div>
     </section>
 
+
+    <section id="faq" class="section faq-section" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="section-intro split-heading" data-reveal>
+          <div>
+            <p class="eyebrow"><span></span> Preguntas</p>
+            <p class="section-index">05 / 06</p>
+          </div>
+          <div>
+            <h2 id="faq-title">Lo que preguntan los equipos antes de partir.</h2>
+            <p class="section-lead">Respuestas directas sobre integración, privacidad, alcance clínico y estado del producto. Si falta algo, escríbenos y lo respondemos.</p>
+          </div>
+        </div>
+
+        <div class="faq-list" data-reveal>
+          {faqItems.map(([question, answer]) => (
+            <details class="faq-item" name="faq">
+              <summary>{question}<span class="faq-sign" aria-hidden="true"></span></summary>
+              <p class="faq-answer">{answer}</p>
+            </details>
+          ))}
+        </div>
+
+        <div class="faq-aside" data-reveal>
+          <p><strong>¿Tu pregunta no está aquí?</strong> Escríbenos y respondemos con el detalle técnico que necesites, sin compromiso comercial.</p>
+          <a class="button button-small" href="#contacto">Hacer una pregunta<Icon name="arrow-down-right" class="icon icon-sm button-icon" /></a>
+        </div>
+
+        <div class="assurance-row" data-reveal>
+          {assurances.map(([icon, heading, copy]) => (
+            <div>
+              <Icon name={icon as any} class="icon" />
+              <div><strong>{heading}</strong><small>{copy}</small></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
     <section id="contacto" class="section contact-section" aria-labelledby="contact-title">
       <div class="container contact-grid">
         <div class="contact-copy" data-reveal>
@@ -540,18 +647,37 @@ const differentiators = [
           </div>
         </div>
 
-        <form class="contact-form" id="contact-form" data-reveal data-delay="100" novalidate>
-          <div class="form-heading"><span>Hablemos</span><span>05 / 05</span></div>
+        <form
+          class="contact-form"
+          id="contact-form"
+          data-reveal
+          data-delay="100"
+          novalidate
+          toolname="contact_biohi"
+          tooldescription="Enviar mensaje de contacto y solicitud de información o piloto para la plataforma BIOHI"
+          aria-describedby="form-status"
+        >
+          <div class="form-heading"><span>Hablemos</span><span>06 / 06</span></div>
           <div class="field-row">
-            <label>Nombre<input type="text" name="nombre" autocomplete="name" required placeholder="Tu nombre" /></label>
-            <label>Institución<input type="text" name="institucion" autocomplete="organization" required placeholder="Hospital u organización" /></label>
+            <label for="contact-nombre">Nombre
+              <input id="contact-nombre" type="text" name="nombre" autocomplete="name" required placeholder="Tu nombre" />
+            </label>
+            <label for="contact-institucion">Institución
+              <input id="contact-institucion" type="text" name="institucion" autocomplete="organization" required placeholder="Hospital u organización" />
+            </label>
           </div>
           <div class="field-row">
-            <label>Cargo<input type="text" name="cargo" autocomplete="organization-title" required placeholder="Tu rol" /></label>
-            <label>Correo<input type="email" name="correo" autocomplete="email" required placeholder="nombre@institucion.cl" /></label>
+            <label for="contact-cargo">Cargo
+              <input id="contact-cargo" type="text" name="cargo" autocomplete="organization-title" required placeholder="Tu rol" />
+            </label>
+            <label for="contact-correo">Correo
+              <input id="contact-correo" type="email" name="correo" autocomplete="email" required placeholder="nombre@institucion.cl" />
+            </label>
           </div>
-          <label>Mensaje<textarea name="mensaje" rows="5" required placeholder="Cuéntanos brevemente en qué podemos colaborar"></textarea></label>
-          <button class="button form-submit" type="submit">Enviar mensaje <span aria-hidden="true">↗</span></button>
+          <label for="contact-mensaje">Mensaje
+            <textarea id="contact-mensaje" name="mensaje" rows="5" required placeholder="Cuéntanos brevemente en qué podemos colaborar"></textarea>
+          </label>
+          <button class="button form-submit" type="submit" data-submit>Enviar mensaje<Icon name="arrow-up-right" class="icon button-icon" /></button>
           <p class="form-privacy">Tus datos no se almacenan en esta versión demostrativa.</p>
           <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
         </form>
@@ -565,25 +691,49 @@ const differentiators = [
       <nav aria-label="Navegación del pie de página">{navItems.map(([label, href]) => <a href={href}>{label}</a>)}</nav>
       <div class="footer-social"><span>Instagram · próximamente</span><span>LinkedIn · próximamente</span></div>
     </div>
-    <div class="container footer-bottom"><span>© 2026 BIOHI. Todos los derechos reservados.</span><span>Desarrollado en Chile.</span><a href="#inicio">Volver arriba ↑</a></div>
+    <div class="container footer-bottom">
+      <span>© 2026 BIOHI. Todos los derechos reservados.</span>
+      <div class="footer-legal">
+        <a href="/privacidad">Política de privacidad</a>
+        <a href="/terminos">Términos de uso</a>
+      </div>
+      <a href="#inicio">Volver arriba<Icon name="arrow-up-left" class="icon icon-sm" /></a>
+    </div>
   </footer>
 
   <script>
     document.documentElement.classList.add('js');
 
+    const siteHeader = document.querySelector<HTMLElement>('[data-header]');
     const menuButton = document.querySelector('[data-menu-toggle]');
-    const mobileMenu = document.querySelector('[data-mobile-menu]');
-    const closeMenu = () => {
-      menuButton?.setAttribute('aria-expanded', 'false');
-      menuButton?.setAttribute('aria-label', 'Abrir menú');
-      if (mobileMenu instanceof HTMLElement) mobileMenu.hidden = true;
+    const mobileMenu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+    const mainContent = document.getElementById('contenido');
+    const siteFooter = document.querySelector<HTMLElement>('.site-footer');
+    let closeTimer = 0;
+
+    const setMenu = (open: boolean) => {
+      window.clearTimeout(closeTimer);
+      menuButton?.setAttribute('aria-expanded', String(open));
+      menuButton?.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (!mobileMenu) return;
+      if (open) {
+        mainContent?.setAttribute('inert', '');
+        siteFooter?.setAttribute('inert', '');
+        mobileMenu.hidden = false;
+        requestAnimationFrame(() => siteHeader?.setAttribute('data-open', 'true'));
+        return;
+      }
+      mainContent?.removeAttribute('inert');
+      siteFooter?.removeAttribute('inert');
+      siteHeader?.setAttribute('data-open', 'false');
+      // keep it out of the accessibility tree once the overlay has faded
+      closeTimer = window.setTimeout(() => { mobileMenu.hidden = true; }, 700);
     };
+    const closeMenu = () => setMenu(false);
 
     menuButton?.addEventListener('click', () => {
-      const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
-      menuButton.setAttribute('aria-expanded', String(!isOpen));
-      menuButton.setAttribute('aria-label', isOpen ? 'Abrir menú' : 'Cerrar menú');
-      if (mobileMenu instanceof HTMLElement) mobileMenu.hidden = isOpen;
+      setMenu(menuButton.getAttribute('aria-expanded') !== 'true');
     });
     mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
     document.addEventListener('keydown', (event) => {
@@ -593,10 +743,13 @@ const differentiators = [
       }
     });
 
-    const header = document.querySelector('[data-header]');
-    const setHeaderState = () => header?.classList.toggle('scrolled', window.scrollY > 24);
-    setHeaderState();
-    window.addEventListener('scroll', setHeaderState, { passive: true });
+    const topSentinel = document.querySelector('#inicio');
+    if (topSentinel) {
+      new IntersectionObserver(
+        ([entry]) => siteHeader?.classList.toggle('scrolled', !entry.isIntersecting),
+        { rootMargin: '-24px 0px 0px 0px', threshold: 0 },
+      ).observe(topSentinel);
+    }
 
     const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
     if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -629,8 +782,68 @@ const differentiators = [
     }, { rootMargin: '-38% 0px -54%' });
     observedSections.forEach((section) => activeObserver.observe(section));
 
+    // B11 — each word crosses the trigger line on its own, in reading order.
+    // Progress is read inside a rAF loop that only runs while the block is in
+    // view, so there is no unthrottled scroll listener.
+    const taglineBlock = document.querySelector<HTMLElement>('[data-tagline]');
+    const taglineWords = [...document.querySelectorAll<HTMLElement>('[data-tagline] .tagline-word')];
+    if (taglineBlock && taglineWords.length) {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        taglineWords.forEach((word) => word.classList.add('is-lit'));
+      } else {
+        let ticking = false;
+        let lastLit = -1;
+
+        const paint = () => {
+          ticking = false;
+          const rect = taglineBlock.getBoundingClientRect();
+          const start = window.innerHeight * 0.88;
+          const end = window.innerHeight * 0.32;
+          const progress = Math.min(1, Math.max(0, (start - rect.top) / (start - end)));
+          const lit = Math.round(progress * taglineWords.length);
+          if (lit === lastLit) return;
+          taglineWords.forEach((word, index) => word.classList.toggle('is-lit', index < lit));
+          lastLit = lit;
+        };
+
+        const onScroll = () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(paint);
+        };
+
+        const blockObserver = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) {
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+          } else {
+            window.removeEventListener('scroll', onScroll);
+          }
+        }, { threshold: 0 });
+        blockObserver.observe(taglineBlock);
+      }
+    }
+
     const contactForm = document.querySelector<HTMLFormElement>('#contact-form');
     const formStatus = document.querySelector<HTMLElement>('#form-status');
+
+    // Sync aria-invalid with native :user-invalid state for accessibility
+    const syncAria = (el: EventTarget | null) => {
+      if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+        if (el.matches(':user-invalid')) {
+          el.setAttribute('aria-invalid', 'true');
+        } else if (el.matches(':user-valid')) {
+          el.setAttribute('aria-invalid', 'false');
+        }
+      }
+    };
+    contactForm?.addEventListener('blur', (e) => syncAria(e.target), true);
+    contactForm?.addEventListener('input', (e) => {
+      if (e.target instanceof HTMLElement && e.target.hasAttribute('aria-invalid')) {
+        syncAria(e.target);
+      }
+    });
+
     contactForm?.addEventListener('submit', (event) => {
       event.preventDefault();
       if (!contactForm.checkValidity()) {
@@ -638,7 +851,13 @@ const differentiators = [
         if (formStatus) formStatus.textContent = 'Revisa los campos obligatorios antes de continuar.';
         return;
       }
-      if (formStatus) formStatus.textContent = 'El canal de envío institucional aún no está conectado. Tus datos no fueron enviados; BIOHI lo habilitará próximamente.';
+      const submitButton = contactForm.querySelector<HTMLButtonElement>('[data-submit]');
+      submitButton?.setAttribute('data-loading', 'true');
+      if (formStatus) formStatus.textContent = 'Enviando…';
+      window.setTimeout(() => {
+        submitButton?.removeAttribute('data-loading');
+        if (formStatus) formStatus.textContent = 'El canal de envío institucional aún no está conectado. Tus datos no fueron enviados; BIOHI lo habilitará próximamente.';
+      }, 700);
     });
   </script>
 </BaseLayout>

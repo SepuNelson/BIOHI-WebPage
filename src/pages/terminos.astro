@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+
+const title = 'Términos de uso | BIOHI';
+const description = 'Condiciones de uso del sitio de BIOHI: alcance informativo, límites clínicos y propiedad del contenido.';
+---
+
+<BaseLayout {title} {description}>
+  <main class="legal-page">
+    <div class="container">
+      <p class="eyebrow"><span></span> Legal</p>
+      <h1 style="max-width: 680px; background-image: none; color: var(--paper)">Términos de uso</h1>
+      <p class="legal-updated">Última actualización: 26 de agosto de 2026</p>
+
+      <div class="legal-body">
+        <h2>Carácter del sitio</h2>
+        <p>Este sitio presenta el proyecto BIOHI y su propuesta de valor. Su contenido es informativo y no constituye una oferta comercial vinculante ni un compromiso de disponibilidad de funcionalidades.</p>
+
+        <h2>Límite clínico</h2>
+        <p>BIOHI no emite indicaciones terapéuticas ni reemplaza el juicio clínico. La información que entrega la plataforma es un insumo estructurado para vigilancia, análisis y gestión, y su interpretación corresponde siempre a profesionales habilitados.</p>
+
+        <h2>Cifras y referencias</h2>
+        <p>Las cifras citadas en el sitio provienen de fuentes públicas identificadas en cada caso, como la Organización Mundial de la Salud y los Centros para el Control y la Prevención de Enfermedades de Estados Unidos. Describen contextos globales o de ese país y no representan resultados propios de BIOHI ni prevalencia local chilena.</p>
+
+        <h2>Material demostrativo</h2>
+        <p>Las pantallas de producto que se muestran usan datos sintéticos con fines ilustrativos. No corresponden a información real de ningún establecimiento.</p>
+
+        <h2>Propiedad intelectual</h2>
+        <p>La marca BIOHI, el logotipo, los textos y las piezas gráficas de este sitio pertenecen al equipo del proyecto. Puedes citarlos con atribución; su reproducción con fines comerciales requiere autorización previa.</p>
+
+        <h2>Cambios</h2>
+        <p>Estos términos pueden actualizarse a medida que el producto avanza. La fecha de la última revisión se indica al inicio de esta página.</p>
+      </div>
+
+      <div class="hero-actions" style="margin-top: 48px">
+        <a class="button" href="/">Volver al inicio<Icon name="arrow-up-left" class="icon button-icon" /></a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
