@@ -1,5 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AgarField from '../components/svg/AgarField.astro';
+import FragmentFlow from '../components/svg/FragmentFlow.astro';
+import AntibiogramGrid from '../components/svg/AntibiogramGrid.astro';
+import ProcessGlyph from '../components/svg/ProcessGlyph.astro';
+import InstitutionalStrip from '../components/InstitutionalStrip.astro';
 
 const title = 'BIOHI | Inteligencia Microbiológica para Hospitales';
 const description = 'BIOHI transforma datos microbiológicos en información útil para vigilancia, equipos PROA y gestión hospitalaria mediante integración, normalización y analítica multicentro.';
@@ -48,7 +53,14 @@ const problemCards = [
   ['Decisiones', 'Menos evidencia local disponible', 'PROA necesita información actualizada y contextualizada para priorizar su revisión.'],
 ];
 
-const processSteps = ['Datos', 'Integración', 'Normalización', 'Análisis', 'IA y predicción', 'Vigilancia'];
+const processSteps = [
+  { label: 'Datos', glyph: 'datos' as const },
+  { label: 'Integración', glyph: 'integracion' as const },
+  { label: 'Normalización', glyph: 'normalizacion' as const },
+  { label: 'Análisis', glyph: 'analisis' as const },
+  { label: 'IA y predicción', glyph: 'prediccion' as const },
+  { label: 'Vigilancia', glyph: 'vigilancia' as const },
+];
 
 const clinicalBenefits = [
   ['Evidencia local', 'Información microbiológica contextualizada para comprender la realidad de cada institución.'],
@@ -97,6 +109,7 @@ const differentiators = [
 
   <main id="contenido">
     <section id="inicio" class="hero section-grid" aria-labelledby="hero-title">
+      <AgarField />
       <div class="hero-orbit orbit-one" aria-hidden="true"></div>
       <div class="hero-orbit orbit-two" aria-hidden="true"></div>
       <div class="container hero-grid">
@@ -177,6 +190,8 @@ const differentiators = [
           </div>
           <p class="pending-note">Los perfiles personales y sus enlaces profesionales se publicarán cuando exista autorización individual.</p>
         </div>
+
+        <InstitutionalStrip />
       </div>
     </section>
 
@@ -211,6 +226,7 @@ const differentiators = [
             <h3>El problema no es la ausencia de datos.</h3>
             <p>La información ya existe, pero está dispersa entre sistemas y formatos. Antes de analizarla, los equipos deben consolidarla y homologarla manualmente.</p>
           </div>
+          <FragmentFlow />
         </div>
 
         <div class="hospital-impact">
@@ -247,12 +263,17 @@ const differentiators = [
         <ol class="process-flow" data-reveal aria-label="Proceso de BIOHI">
           {processSteps.map((step, index) => (
             <li>
-              <span>0{index + 1}</span>
-              <strong>{step}</strong>
+              <div class="process-mark">
+                <span>0{index + 1}</span>
+                <ProcessGlyph step={step.glyph} />
+              </div>
+              <strong>{step.label}</strong>
               {index < processSteps.length - 1 && <i aria-hidden="true">→</i>}
             </li>
           ))}
         </ol>
+
+        <AntibiogramGrid />
 
         <aside class="clinical-note" data-reveal>
           <p class="clinical-note-label">Principio clínico</p>

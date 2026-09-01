@@ -1,0 +1,53 @@
+---
+import ChileFlag from './svg/ChileFlag.astro';
+
+// Franja de respaldo institucional. Va justo debajo del bloque de equipo,
+// que es donde el texto afirma la afiliación con la USM: los logos
+// sustentan esa afirmación en el mismo punto donde se hace.
+//
+// Los logos van a todo color sobre una placa clara en vez de recoloreados a
+// blanco. Es la forma correcta de usar una marca institucional sobre fondo
+// oscuro: no se altera ningún color de marca.
+---
+
+<aside class="institutional" aria-labelledby="institutional-title">
+  <div class="institutional-head">
+    <p class="subeyebrow" id="institutional-title">Contexto académico</p>
+    <p class="institutional-copy">
+      BIOHI se desarrolla en el Departamento de Informática de la Universidad Técnica
+      Federico Santa María y se presentará en la Feria de Software.
+    </p>
+  </div>
+
+  <div class="institutional-row">
+    <div class="logo-plate">
+      <img
+        class="logo-utfsm"
+        src="/logos/utfsm-informatica.png"
+        width="294"
+        height="42"
+        alt="Universidad Técnica Federico Santa María — Departamento de Informática"
+        loading="lazy"
+        decoding="async"
+      />
+      <span class="logo-divider" aria-hidden="true"></span>
+      <img
+        class="logo-fesw"
+        src="/logos/fesw-usm.png"
+        width="91"
+        height="46"
+        alt="Feria de Software USM"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <div class="institutional-place">
+      <ChileFlag class="flag-cl" />
+      <div>
+        <strong>Valparaíso, Chile</strong>
+        <small>Casa Central USM</small>
+      </div>
+    </div>
+  </div>
+</aside>

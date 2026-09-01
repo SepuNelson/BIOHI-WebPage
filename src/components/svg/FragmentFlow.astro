@@ -1,0 +1,98 @@
+---
+// Diagrama del problema: el mismo microorganismo llega escrito de tres formas
+// distintas desde tres fuentes distintas. Ese es el trabajo manual que BIOHI
+// absorbe. Los nombres de la izquierda son variantes reales de nomenclatura
+// para Escherichia coli.
+//
+// Estructura HTML + glifos SVG por pieza: el texto refluye y es legible en
+// móvil, cosa que un SVG monolítico con texto no logra.
+const sources = [
+  {
+    origin: 'LIS · Hospital 01',
+    value: 'E. coli',
+    glyph: 'table',
+    note: 'Export tabular',
+  },
+  {
+    origin: 'CSV · Laboratorio B',
+    value: 'ESCHERICHIA COLI',
+    glyph: 'delimited',
+    note: 'Delimitado por comas',
+  },
+  {
+    origin: 'Informe · Hospital 03',
+    value: 'E.COLI-01',
+    glyph: 'document',
+    note: 'Documento de texto',
+  },
+];
+---
+
+<div class="frag-diagram" role="img" aria-label="Tres fuentes escriben el mismo microorganismo de tres formas distintas —E. coli, ESCHERICHIA COLI y E.COLI-01—; la consolidación manual las homologa a un único código antes de poder analizarlas.">
+  <ul class="frag-sources">
+    {sources.map((source) => (
+      <li class="frag-source">
+        <svg class="frag-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          {source.glyph === 'table' && (
+            <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <path d="M3 9h18M3 14.5h18M9.5 9v11" />
+            </g>
+          )}
+          {source.glyph === 'delimited' && (
+            <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <path d="M3 7h5M11 7h4M18 7h3M3 12h3M9 12h7M19 12h2M3 17h6M12 17h3M18 17h3" />
+            </g>
+          )}
+          {source.glyph === 'document' && (
+            <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+              <path d="M14 3v5h5M8.5 13h7M8.5 16.5h4" />
+            </g>
+          )}
+        </svg>
+        <div class="frag-source-body">
+          <span class="frag-origin">{source.origin}</span>
+          <strong class="frag-value">{source.value}</strong>
+          <span class="frag-note">{source.note}</span>
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  <div class="frag-merge">
+    <svg class="frag-merge-svg" viewBox="0 0 120 220" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid meet">
+      <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity=".38" vector-effect="non-scaling-stroke">
+        <path d="M0 32 C 46 32, 44 110, 74 110" />
+        <path d="M0 110 H 74" />
+        <path d="M0 188 C 46 188, 44 110, 74 110" />
+      </g>
+      <g class="frag-particles" fill="currentColor">
+        <circle r="2.4" cy="0" cx="0">
+          <animateMotion dur="3.2s" repeatCount="indefinite" path="M0 32 C 46 32, 44 110, 74 110" />
+        </circle>
+        <circle r="2.4" cy="0" cx="0">
+          <animateMotion dur="3.2s" begin="1.05s" repeatCount="indefinite" path="M0 110 H 74" />
+        </circle>
+        <circle r="2.4" cy="0" cx="0">
+          <animateMotion dur="3.2s" begin="2.1s" repeatCount="indefinite" path="M0 188 C 46 188, 44 110, 74 110" />
+        </circle>
+      </g>
+      <g stroke="currentColor" stroke-width="1.2" stroke-opacity=".55" vector-effect="non-scaling-stroke">
+        <path d="M78 88 v44" />
+        <path d="M84 92 v36M90 96 v28M96 100 v20" stroke-opacity=".22" />
+        <path d="M100 110 h18" />
+        <path d="M112 105 l6 5 -6 5" fill="none" />
+      </g>
+    </svg>
+    <span class="frag-merge-label">Consolidación manual</span>
+    <span class="frag-merge-sub">buscar · limpiar · homologar</span>
+  </div>
+
+  <div class="frag-output">
+    <span class="frag-origin">Modelo común</span>
+    <strong class="frag-value frag-value-clean">Escherichia coli</strong>
+    <span class="frag-code">ORG-0042 · homologado</span>
+    <div class="frag-output-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+</div>

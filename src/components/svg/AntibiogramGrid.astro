@@ -1,0 +1,115 @@
+---
+// Matriz de susceptibilidad (antibiograma) con tendencia por microorganismo.
+// Es el artefacto que un equipo PROA lee en la práctica, así que la sección
+// "La plataforma" muestra la salida real en vez de describirla.
+//
+// La matriz va en <table>: son datos tabulares y así quedan navegables con
+// lector de pantalla. El SVG se reserva para la tendencia, que sí es gráfico.
+//
+// Datos sintéticos. Respetan resistencias intrínsecas reales (vancomicina
+// solo en grampositivos; P. aeruginosa no se informa frente a AMP ni CTX)
+// para que la lectura sea creíble ante público de microbiología.
+
+const antibiotics = [
+  { code: 'AMP', name: 'Ampicilina' },
+  { code: 'CTX', name: 'Cefotaxima' },
+  { code: 'CIP', name: 'Ciprofloxacino' },
+  { code: 'GEN', name: 'Gentamicina' },
+  { code: 'MEM', name: 'Meropenem' },
+  { code: 'TZP', name: 'Piperacilina-tazobactam' },
+  { code: 'VAN', name: 'Vancomicina' },
+];
+
+const organisms = [
+  { name: 'Escherichia coli', short: 'E. coli', results: ['R', 'I', 'R', 'S', 'S', 'S', null], trend: [14, 15, 17, 16, 19, 21] },
+  { name: 'Klebsiella pneumoniae', short: 'K. pneumoniae', results: ['R', 'R', 'I', 'S', 'S', 'I', null], trend: [22, 24, 23, 27, 29, 31] },
+  { name: 'Staphylococcus aureus', short: 'S. aureus', results: ['R', null, 'S', 'S', null, null, 'S'], trend: [31, 30, 28, 29, 27, 26] },
+  { name: 'Pseudomonas aeruginosa', short: 'P. aeruginosa', results: [null, null, 'I', 'S', 'S', 'S', null], trend: [11, 13, 12, 15, 14, 16] },
+  { name: 'Acinetobacter baumannii', short: 'A. baumannii', results: ['R', 'R', 'R', 'I', 'R', 'R', null], trend: [48, 52, 55, 54, 59, 63] },
+];
+
+const readings: Record<string, string> = {
+  S: 'Sensible',
+  I: 'Intermedio',
+  R: 'Resistente',
+};
+
+// Tendencia a 6 meses. Escala fija 0–70 % —no normalizada por fila— para que
+// la altura de la línea sea comparable entre microorganismos: A. baumannii
+// tiene que verse claramente por encima de E. coli.
+const SPARK_W = 72;
+const SPARK_H = 34;
+const SPARK_MAX = 70;
+const sparkPath = (values: number[]) =>
+  values
+    .map((value, index) => {
+      const x = (index * SPARK_W) / (values.length - 1);
+      const y = SPARK_H - 2 - (value / SPARK_MAX) * (SPARK_H - 5);
+      return `${index === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`;
+    })
+    .join(' ');
+const sparkEnd = (values: number[]) => ({
+  x: SPARK_W,
+  y: SPARK_H - 2 - (values[values.length - 1] / SPARK_MAX) * (SPARK_H - 5),
+});
+---
+
+<figure class="antibiogram">
+  <figcaption class="antibiogram-head">
+    <div>
+      <p class="subeyebrow">Salida de la plataforma</p>
+      <h3>El antibiograma consolidado, listo para leer.</h3>
+    </div>
+    <span class="antibiogram-tag">Datos sintéticos · Ejemplo</span>
+  </figcaption>
+
+  <div class="antibiogram-scroll">
+    <table class="antibiogram-table">
+      <caption class="sr-only">
+        Matriz de susceptibilidad de cinco microorganismos frente a siete antibióticos, con la tendencia de resistencia de los últimos seis meses.
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Microorganismo</th>
+          {antibiotics.map((antibiotic) => (
+            <th scope="col" class="antibiogram-ab"><abbr title={antibiotic.name}>{antibiotic.code}</abbr></th>
+          ))}
+          <th scope="col" class="antibiogram-trend-col">Tendencia 6 m</th>
+        </tr>
+      </thead>
+      <tbody>
+        {organisms.map((organism) => (
+          <tr>
+            <th scope="row"><em>{organism.short}</em></th>
+            {organism.results.map((result, index) => (
+              <td class={result ? `sir sir-${result.toLowerCase()}` : 'sir sir-na'}>
+                {result ? (
+                  <span><span aria-hidden="true">{result}</span><span class="sr-only">{`${readings[result]} a ${antibiotics[index].name}`}</span></span>
+                ) : (
+                  <span><span aria-hidden="true">·</span><span class="sr-only">{`No se informa frente a ${antibiotics[index].name}`}</span></span>
+                )}
+              </td>
+            ))}
+            <td class="antibiogram-trend">
+              <div class="spark">
+                <svg viewBox={`0 0 ${SPARK_W} ${SPARK_H}`} aria-hidden="true" focusable="false" preserveAspectRatio="none">
+                  <line x1="0" y1={SPARK_H - 2} x2={SPARK_W} y2={SPARK_H - 2} stroke="currentColor" stroke-opacity=".18" stroke-width="1" vector-effect="non-scaling-stroke" />
+                  <path d={sparkPath(organism.trend)} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+                  <circle cx={sparkEnd(organism.trend).x - 1.5} cy={sparkEnd(organism.trend).y} r="2.4" fill="currentColor" />
+                </svg>
+                <span>{organism.trend[organism.trend.length - 1]}%</span>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="antibiogram-legend">
+    <span class="sir-key sir-s">S<i>Sensible</i></span>
+    <span class="sir-key sir-i">I<i>Intermedio</i></span>
+    <span class="sir-key sir-r">R<i>Resistente</i></span>
+    <span class="sir-key sir-na">·<i>No informado</i></span>
+  </div>
+</figure>

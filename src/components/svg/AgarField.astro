@@ -1,0 +1,85 @@
+---
+// Atmósfera del hero: una placa de difusión en disco (Kirby-Bauer) vista
+// cenitalmente. Cada disco de antibiótico abre un halo de inhibición; ese
+// halo es la lectura visual de la susceptibilidad. Es el artefacto de origen
+// del dato que BIOHI procesa, así que el hero abre con él en vez de con un
+// degradado genérico.
+//
+// Puramente decorativo: aria-hidden y sin texto.
+interface Props {
+  class?: string;
+}
+
+const { class: className = 'agar-field' } = Astro.props;
+
+// Cinco discos en pentágono, como se siembran en una placa real.
+const disks = [
+  { x: 400, y: 190, zone: 74 },
+  { x: 599.7, y: 335.1, zone: 58 },
+  { x: 523.4, y: 569.9, zone: 86 },
+  { x: 276.6, y: 569.9, zone: 46 },
+  { x: 200.3, y: 335.1, zone: 68 },
+];
+
+// Marcas de calibre cada 6° sobre el borde de la placa.
+const ticks = Array.from({ length: 60 }, (_, i) => i * 6);
+---
+
+<svg
+  class={className}
+  viewBox="0 0 800 800"
+  aria-hidden="true"
+  focusable="false"
+  xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="agar-wash" cx="50%" cy="46%" r="52%">
+      <stop offset="0%" stop-color="#27e38d" stop-opacity=".10" />
+      <stop offset="62%" stop-color="#27e38d" stop-opacity=".025" />
+      <stop offset="100%" stop-color="#27e38d" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="agar-zone" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8af0bc" stop-opacity=".16" />
+      <stop offset="55%" stop-color="#27e38d" stop-opacity=".05" />
+      <stop offset="100%" stop-color="#27e38d" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <circle cx="400" cy="400" r="392" fill="url(#agar-wash)" />
+
+  <g class="agar-rim">
+    <circle cx="400" cy="400" r="372" fill="none" stroke="#27e38d" stroke-opacity=".16" stroke-width="1" />
+    <circle cx="400" cy="400" r="356" fill="none" stroke="#27e38d" stroke-opacity=".07" stroke-width="1" stroke-dasharray="3 9" />
+    {ticks.map((angle) => (
+      <line
+        x1="400"
+        y1="24"
+        x2="400"
+        y2={angle % 30 === 0 ? 42 : 34}
+        stroke="#27e38d"
+        stroke-opacity={angle % 30 === 0 ? '.22' : '.10'}
+        stroke-width="1"
+        transform={`rotate(${angle} 400 400)`}
+      />
+    ))}
+  </g>
+
+  <g class="agar-disks">
+    {disks.map((disk, index) => (
+      <g style={`--zone-delay: ${index * 900}ms`}>
+        <circle cx={disk.x} cy={disk.y} r={disk.zone} fill="url(#agar-zone)" />
+        <circle
+          class="agar-halo"
+          cx={disk.x}
+          cy={disk.y}
+          r={disk.zone}
+          fill="none"
+          stroke="#27e38d"
+          stroke-opacity=".18"
+          stroke-width="1"
+        />
+        <circle cx={disk.x} cy={disk.y} r={disk.zone * 0.58} fill="none" stroke="#27e38d" stroke-opacity=".08" stroke-width="1" stroke-dasharray="2 6" />
+        <circle cx={disk.x} cy={disk.y} r="11" fill="#08110e" stroke="#27e38d" stroke-opacity=".38" stroke-width="1" />
+      </g>
+    ))}
+  </g>
+</svg>
