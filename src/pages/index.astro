@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import AgarField from '../components/svg/AgarField.astro';
+import LogoAnimated from '../components/svg/LogoAnimated.astro';
 import FragmentFlow from '../components/svg/FragmentFlow.astro';
 import AntibiogramGrid from '../components/svg/AntibiogramGrid.astro';
 import ProcessGlyph from '../components/svg/ProcessGlyph.astro';
@@ -110,8 +111,6 @@ const differentiators = [
   <main id="contenido">
     <section id="inicio" class="hero section-grid" aria-labelledby="hero-title">
       <AgarField />
-      <div class="hero-orbit orbit-one" aria-hidden="true"></div>
-      <div class="hero-orbit orbit-two" aria-hidden="true"></div>
       <div class="container hero-grid">
         <div class="hero-copy" data-reveal>
           <p class="eyebrow"><span></span> Inteligencia microbiológica</p>
@@ -123,20 +122,8 @@ const differentiators = [
           </div>
         </div>
 
-        <div class="data-orbit" data-reveal data-delay="120" aria-label="Flujo de datos desde hospitales hacia la inteligencia microbiológica de BIOHI">
-          <div class="orbit-meta"><span>RED CLÍNICA / 05 NODOS</span><span class="live-dot">SISTEMA ACTIVO</span></div>
-          <div class="network-canvas" aria-hidden="true">
-            <span class="node node-a">H01</span>
-            <span class="node node-b">H02</span>
-            <span class="node node-c">H03</span>
-            <span class="node node-d">H04</span>
-            <span class="node node-e">H05</span>
-            <span class="network-line line-a"></span>
-            <span class="network-line line-b"></span>
-            <span class="network-line line-c"></span>
-            <span class="network-line line-d"></span>
-            <div class="biohi-core"><span>BIO</span><strong>HI</strong><small>motor de inteligencia</small></div>
-          </div>
+        <div class="hero-brandmark">
+          <LogoAnimated />
           <div class="signal-row">
             <div><span>01</span><strong>Integrar</strong></div>
             <div><span>02</span><strong>Normalizar</strong></div>
@@ -416,6 +403,114 @@ const differentiators = [
       revealItems.forEach((item) => revealObserver.observe(item));
     } else {
       revealItems.forEach((item) => item.classList.add('is-visible'));
+    }
+
+    // ── Traspaso de marca: el logotipo del hero viaja al slot del navbar ──
+    // El destino depende del layout, asi que se mide y se publica como
+    // custom properties; la progresion la lleva el scroll timeline nativo.
+    const brandmark = document.querySelector<HTMLElement>('.brandmark');
+    const headerLogo = document.querySelector<HTMLElement>('.brand img');
+    const heroSection = document.querySelector<HTMLElement>('.hero');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const nativeScrollTimeline = CSS.supports('(animation-timeline: scroll()) and (animation-range: 0% 100%)');
+
+    let flightRange = 0;
+
+    const measureFlight = () => {
+      if (!brandmark || !headerLogo || !heroSection) return;
+
+      // getBoundingClientRect incluiria la transformacion en curso, asi que
+      // se suspende la animacion para leer la posicion de reposo.
+      const previousAnimation = brandmark.style.animationName;
+      brandmark.style.animationName = 'none';
+      brandmark.style.translate = 'none';
+      brandmark.style.scale = 'none';
+
+      const mark = brandmark.getBoundingClientRect();
+      const target = headerLogo.getBoundingClientRect();
+
+      brandmark.style.removeProperty('animation-name');
+      brandmark.style.removeProperty('translate');
+      brandmark.style.removeProperty('scale');
+      if (previousAnimation) brandmark.style.animationName = previousAnimation;
+
+      if (!mark.width || !target.width) return;
+
+      // El vuelo termina antes de que el hero salga de pantalla, para que la
+      // marca no quede recortada por su overflow.
+      flightRange = Math.max(220, heroSection.offsetHeight * 0.62);
+
+      // El encabezado es fixed: su posicion en viewport es constante. Sumar
+      // flightRange compensa el desplazamiento natural del hero al scrollear.
+      const root = document.documentElement;
+      root.style.setProperty('--fly-x', `${target.left - mark.left}px`);
+      root.style.setProperty('--fly-y', `${target.top - (mark.top + window.scrollY) + flightRange}px`);
+      root.style.setProperty('--fly-scale', String(target.width / mark.width));
+      root.style.setProperty('--fly-range', `${flightRange}px`);
+      root.classList.add('flight-ready');
+    };
+
+    // Replica del vuelo por scroll listener, coalescida en rAF. Solo escribe
+    // translate/scale/opacity para no salir del compositor.
+    let fallbackRunning = false;
+    const startFlightFallback = () => {
+      if (!brandmark || !headerLogo || fallbackRunning) return;
+      fallbackRunning = true;
+      document.documentElement.classList.add('flight-js');
+
+      let ticking = false;
+      const applyFlight = () => {
+        ticking = false;
+        if (!flightRange) return;
+        const progress = Math.min(1, Math.max(0, window.scrollY / flightRange));
+        const styles = getComputedStyle(document.documentElement);
+        const flyX = parseFloat(styles.getPropertyValue('--fly-x')) || 0;
+        const flyY = parseFloat(styles.getPropertyValue('--fly-y')) || 0;
+        const flyScale = parseFloat(styles.getPropertyValue('--fly-scale')) || 1;
+
+        // Mismo arco que los keyframes bh-fly: la Y avanza antes que la X,
+        // para no cruzar por encima del titular.
+        const alongX = Math.pow(progress, 1.9);
+        const alongY = 1 - Math.pow(1 - progress, 1.7);
+
+        brandmark.style.translate = `${flyX * alongX}px ${flyY * alongY}px`;
+        brandmark.style.scale = String(1 + (flyScale - 1) * progress);
+        brandmark.style.opacity = String(1 - Math.min(1, Math.max(0, (progress - 0.42) / 0.36)));
+        headerLogo.style.opacity = String(Math.min(1, Math.max(0, (progress - 0.44) / 0.38)));
+      };
+      const queueFlight = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(applyFlight);
+      };
+      window.addEventListener('scroll', queueFlight, { passive: true });
+      applyFlight();
+    };
+
+    if (brandmark && headerLogo && heroSection && !reduceMotion.matches) {
+      measureFlight();
+      window.addEventListener('resize', measureFlight);
+
+      // CSS.supports puede informar soporte y aun asi dejar el timeline
+      // inactivo: pasa en navegadores embebidos. No basta con detectar el
+      // feature, hay que comprobar que el timeline efectivamente corra.
+      const timelineRuns = () => {
+        const flight = brandmark.getAnimations().find((animation) => (
+          (animation as CSSAnimation).animationName === 'bh-fly'
+        ));
+        return Boolean(flight?.timeline && flight.timeline.currentTime !== null);
+      };
+
+      if (!nativeScrollTimeline || !timelineRuns()) {
+        // Firefox no lo implementa; el resto llega aqui si el timeline no corre.
+        startFlightFallback();
+      } else {
+        // Red de seguridad por si el timeline tarda un frame en activarse.
+        // setTimeout y no rAF: rAF se congela con la pestaña en segundo plano.
+        window.setTimeout(() => {
+          if (!timelineRuns()) startFlightFallback();
+        }, 400);
+      }
     }
 
     const navLinks = document.querySelectorAll<HTMLAnchorElement>('.desktop-nav a');

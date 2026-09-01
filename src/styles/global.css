@@ -69,27 +69,53 @@ h1 { margin: 0; max-width: 760px; font-family: var(--font-display); font-size: c
 h1 em { color: var(--green); font-style: normal; }
 .hero-lead { max-width: 680px; margin: 30px 0 0; color: var(--soft); font-size: clamp(1rem, 1.3vw, 1.14rem); line-height: 1.75; }
 .hero-actions { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 12px; }
-.data-orbit { position: relative; align-self: center; min-height: 520px; padding: 22px; border: 1px solid var(--line); border-radius: 28px; background: rgba(13,25,21,.72); box-shadow: 0 42px 100px rgba(0,0,0,.25); backdrop-filter: blur(12px); }
-.orbit-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: .58rem; font-weight: 650; letter-spacing: .14em; }
-.live-dot { color: var(--mint); }
-.live-dot::before { content: ''; display: inline-block; width: 5px; height: 5px; margin: 0 7px 1px 0; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(39,227,141,.1); }
-.network-canvas { position: relative; height: 390px; margin-top: 20px; overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: radial-gradient(circle at 50% 48%, rgba(39,227,141,.12), transparent 28%), linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px); background-size: auto, 28px 28px, 28px 28px; }
-.network-canvas::before, .network-canvas::after { content: ''; position: absolute; left: 50%; top: 47%; border: 1px solid rgba(39,227,141,.12); border-radius: 50%; transform: translate(-50%,-50%); }
-.network-canvas::before { width: 240px; height: 240px; }
-.network-canvas::after { width: 320px; height: 320px; border-style: dashed; }
-.node { position: absolute; z-index: 3; width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; background: var(--panel); color: var(--soft); font-size: .6rem; font-weight: 700; box-shadow: 0 0 0 7px rgba(255,255,255,.018); }
-.node::after { content: ''; position: absolute; width: 5px; height: 5px; right: 1px; top: 2px; border-radius: 50%; background: var(--green); }
-.node-a { left: 8%; top: 17%; }.node-b { right: 10%; top: 11%; }.node-c { left: 6%; bottom: 16%; }.node-d { right: 7%; bottom: 18%; }.node-e { left: 46%; bottom: 4%; }
-.network-line { position: absolute; z-index: 1; left: 50%; top: 47%; width: 42%; height: 1px; background: linear-gradient(90deg, rgba(39,227,141,.65), rgba(39,227,141,.08)); transform-origin: left; }
-.line-a { transform: rotate(202deg); }.line-b { transform: rotate(330deg); }.line-c { transform: rotate(151deg); }.line-d { transform: rotate(30deg); }
-.biohi-core { position: absolute; z-index: 4; left: 50%; top: 47%; width: 144px; height: 144px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(39,227,141,.5); border-radius: 50%; background: rgba(8,17,14,.92); color: var(--paper); font-family: var(--font-display); font-size: 1.45rem; font-weight: 750; box-shadow: 0 0 0 15px rgba(39,227,141,.035), 0 0 48px rgba(39,227,141,.08); transform: translate(-50%,-50%); }
-.biohi-core strong { color: var(--green); }.biohi-core small { position: absolute; bottom: 33px; color: var(--muted); font-family: var(--font-display); font-size: .48rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
-.signal-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+/* ── Hero: logotipo animado ────────────────────────────────────────────────
+   Portado de logo-anim.html. Se dibuja al cargar y luego queda respirando.
+   Sustituye la red de nodos que ocupaba esta columna.
+   ──────────────────────────────────────────────────────────────────────── */
+/* El titular es la tesis del hero; la marca acompana. Se limita el ancho
+   para que no compita, sobre todo porque el encabezado ya la muestra. */
+.hero-brandmark { display: grid; gap: 30px; align-self: center; justify-items: center; }
+.brandmark { width: min(100%, 420px); }
+.brandmark svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* Los glifos se trazan y despues se rellenan. */
+.bh-g { fill: var(--green); fill-opacity: 0; stroke: var(--green); stroke-width: 1.6; stroke-dasharray: 1 1; stroke-dashoffset: 1; animation: bh-draw 1.5s cubic-bezier(.5,0,.2,1) forwards, bh-fill 1.1s ease-out forwards; }
+.bh-g0 { animation-delay: .35s, 1.55s; }
+.bh-g1 { animation-delay: .55s, 1.75s; }
+.bh-g2 { animation-delay: .75s, 1.95s; }
+.bh-g3 { animation-delay: .95s, 2.15s; }
+.bh-g4 { animation-delay: 1.15s, 2.35s; }
+
+@keyframes bh-draw { to { stroke-dashoffset: 0; } }
+@keyframes bh-fill { from { fill-opacity: 0; stroke-opacity: 1; } to { fill-opacity: 1; stroke-opacity: 0; } }
+
+/* Anillo de siembra que se expande una vez. fill-box mantiene el centro
+   correcto aunque el SVG escale con el contenedor. */
+.bh-dish { fill: none; stroke: var(--green); transform-box: fill-box; transform-origin: center; animation: bh-dish 3.2s cubic-bezier(.2,.7,.2,1) forwards; }
+@keyframes bh-dish {
+  0% { transform: scale(.15); opacity: 0; stroke-width: 14; }
+  18% { opacity: .55; }
+  100% { transform: scale(1.9); opacity: 0; stroke-width: 1; }
+}
+
+.bh-logo { animation: bh-breathe 3.4s ease-in-out 3.6s infinite; }
+@keyframes bh-breathe {
+  0%, 100% { filter: url(#bh-glow) brightness(1); }
+  50% { filter: url(#bh-glow) brightness(1.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bh-g { animation: none; fill-opacity: 1; stroke-opacity: 0; }
+  .bh-dish { display: none; }
+  .bh-logo { animation: none; }
+}
+
+.signal-row { width: 100%; max-width: 420px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 0; }
 .signal-row div { display: flex; flex-direction: column; gap: 4px; padding: 10px 11px; border: 1px solid var(--line); border-radius: 12px; }
 .signal-row span { color: var(--green); font-size: .58rem; }.signal-row strong { color: var(--soft); font-size: .67rem; font-weight: 550; }
 .hero-footer { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: .64rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
 .scroll-cue { display: flex; align-items: center; gap: 12px; color: var(--soft); }.scroll-cue i { color: var(--green); font-style: normal; font-size: .9rem; }
-.hero-orbit { position: absolute; border: 1px solid rgba(39,227,141,.05); border-radius: 50%; pointer-events: none; }.orbit-one { width: 680px; height: 680px; right: -360px; top: 8%; }.orbit-two { width: 360px; height: 360px; left: -220px; bottom: -180px; }
 .preview-anchor { height: 1px; }
 
 @media (max-width: 920px) {
@@ -104,7 +130,6 @@ h1 em { color: var(--green); font-style: normal; }
   .mobile-nav a { min-height: 48px; display: flex; align-items: center; border-bottom: 1px solid var(--line); color: var(--soft); }
   .hero { padding-top: 130px; }
   .hero-grid { grid-template-columns: 1fr; gap: 60px; padding-block: 58px; }
-  .data-orbit { min-height: 500px; }
 }
 
 @media (max-width: 600px) {
@@ -115,12 +140,6 @@ h1 em { color: var(--green); font-style: normal; }
   h1 { font-size: clamp(2.55rem, 13vw, 3.45rem); }
   .hero-actions { display: grid; }
   .button { width: 100%; }
-  .data-orbit { min-height: auto; padding: 14px; border-radius: 22px; }
-  .network-canvas { height: 340px; }
-  .network-canvas::after { width: 285px; height: 285px; }
-  .biohi-core { width: 120px; height: 120px; font-size: 1.2rem; }
-  .biohi-core small { bottom: 27px; }
-  .node { width: 36px; height: 36px; }
   .hero-footer span:first-child, .hero-footer span:last-child { display: none; }
   .hero-footer { justify-content: center; }
 }
@@ -132,7 +151,10 @@ h1 em { color: var(--green); font-style: normal; }
 
 /* Complete landing system */
 ::selection { background: var(--green); color: var(--ink); }
-body { overflow-x: hidden; }
+/* clip y no hidden: hidden hace que overflow-y compute a auto, el body pasa
+   a ser scroll container y scroll(root) queda inactivo, lo que rompe el
+   traspaso de marca. clip recorta sin crear scroll container. */
+body { overflow-x: clip; }
 body::before { content: ''; position: fixed; z-index: 100; inset: 0 0 auto; height: 2px; pointer-events: none; background: linear-gradient(90deg, transparent, var(--green) 18%, var(--green) 82%, transparent); opacity: .78; }
 img { display: block; max-width: 100%; }
 p { line-height: 1.7; }
@@ -274,11 +296,7 @@ h3, h4 { font-family: var(--font-display); }
 }
 
 @media (max-width: 420px) {
-  .orbit-meta span:first-child { display: none; }
-  .orbit-meta { justify-content: flex-end; }
-  .network-canvas { height: 310px; }
   .signal-row { grid-template-columns: 1fr; }
-  .data-orbit { min-height: auto; }
   .dashboard-frame { margin-inline: -8px; }
   .dash-filters { grid-template-columns: 1fr; }
 }
@@ -438,4 +456,53 @@ h3, h4 { font-family: var(--font-display); }
   .logo-plate { flex-basis: 100%; }
   .logo-divider { display: none; }
   .institutional-place { flex-basis: 100%; }
+}
+
+/* ── Traspaso de marca hero → navbar ──────────────────────────────────────
+   Al bajar, el logotipo del hero viaja hasta el slot del navbar y se apaga
+   mientras el del encabezado se enciende. Resuelve tener dos marcas BIOHI
+   en el mismo viewport: pasan a ser una sola que se desplaza.
+
+   El destino se mide en JS (--fly-x/y/scale/range) porque depende del layout;
+   la progresion la lleva el scroll timeline nativo, que corre en el
+   compositor. Firefox no soporta scroll-driven animations y recibe el
+   fallback por scroll listener.
+   ──────────────────────────────────────────────────────────────────────── */
+.brandmark { position: relative; z-index: 3; transform-origin: 0 0; will-change: translate, scale, opacity; }
+
+/* Trayectoria en arco: primero sube por la derecha y despues barre hacia la
+   izquierda. En linea recta cruzaria por encima del titular. */
+@keyframes bh-fly {
+  0% { translate: 0 0; scale: 1; opacity: 1; }
+  42% { opacity: 1; }
+  55% { translate: calc(var(--fly-x, 0) * .30) calc(var(--fly-y, 0) * .78); }
+  78% { opacity: 0; }
+  100% { translate: var(--fly-x, 0) var(--fly-y, 0); scale: var(--fly-scale, 1); opacity: 0; }
+}
+@keyframes bh-land { from { opacity: 0; } to { opacity: 1; } }
+
+/* flight-ready solo la pone el JS despues de medir el destino con exito. Si
+   el script falla, no hay clase: el logo del navbar queda visible y la marca
+   del hero quieta, que es el estado correcto sin animacion. */
+@supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
+  html.flight-ready .brandmark {
+    animation: bh-fly auto linear both;
+    animation-timeline: scroll(block root);
+    animation-range: 0px var(--fly-range, 520px);
+  }
+  html.flight-ready .brand img {
+    animation: bh-land auto linear both;
+    animation-timeline: scroll(block root);
+    animation-range: calc(var(--fly-range, 520px) * .44) calc(var(--fly-range, 520px) * .82);
+  }
+}
+
+/* Cuando el timeline nativo no corre de verdad, el JS toma el control y
+   apaga la animacion CSS para no pelear con ella. */
+html.flight-js .brandmark, html.flight-js .brand img { animation: none; }
+
+/* Despues del @supports para poder desactivarlo. */
+@media (prefers-reduced-motion: reduce) {
+  html .brandmark, html .brand img { animation: none; translate: none; scale: none; opacity: 1; }
+  .brandmark { will-change: auto; }
 }
