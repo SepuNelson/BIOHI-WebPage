@@ -5,13 +5,15 @@ import ChileFlag from './svg/ChileFlag.astro';
 // que es donde el texto afirma la afiliación con la USM: los logos
 // sustentan esa afirmación en el mismo punto donde se hace.
 //
-// Los logos van a todo color sobre una placa clara en vez de recoloreados a
-// blanco. Es la forma correcta de usar una marca institucional sobre fondo
-// oscuro: no se altera ningún color de marca.
+// Los logos usan las variantes para fondo oscuro (ver design/logos/README.md):
+// el escudo UTFSM y el swoosh de FESW conservan sus colores oficiales, y solo
+// el texto que venía en negro pasa a blanco. Así la franja vive sobre el mismo
+// fondo que el resto de la página, sin introducir una superficie clara que
+// termine siendo el punto más brillante de la sección.
 ---
 
 <aside class="institutional" aria-labelledby="institutional-title">
-  <div class="institutional-head">
+  <div class="institutional-head" data-reveal>
     <p class="subeyebrow" id="institutional-title">Contexto académico</p>
     <p class="institutional-copy">
       BIOHI se desarrolla en el Departamento de Informática de la Universidad Técnica
@@ -19,23 +21,22 @@ import ChileFlag from './svg/ChileFlag.astro';
     </p>
   </div>
 
-  <div class="institutional-row">
-    <div class="logo-plate">
+  <div class="institutional-card" data-reveal>
+    <div class="logo-lockup">
       <img
         class="logo-utfsm"
-        src="/logos/utfsm-informatica.png"
-        width="294"
-        height="42"
+        src="/logos/utfsm-informatica-oscuro.png"
+        width="882"
+        height="126"
         alt="Universidad Técnica Federico Santa María — Departamento de Informática"
         loading="lazy"
         decoding="async"
       />
-      <span class="logo-divider" aria-hidden="true"></span>
       <img
         class="logo-fesw"
-        src="/logos/fesw-usm.png"
-        width="91"
-        height="46"
+        src="/logos/fesw-usm-oscuro.png"
+        width="272"
+        height="138"
         alt="Feria de Software USM"
         loading="lazy"
         decoding="async"
@@ -45,8 +46,8 @@ import ChileFlag from './svg/ChileFlag.astro';
     <div class="institutional-place">
       <ChileFlag class="flag-cl" />
       <div>
-        <strong>Valparaíso, Chile</strong>
-        <small>Casa Central USM</small>
+        <strong>Santiago, Chile</strong>
+        <small>Campus San Joaquín USM</small>
       </div>
     </div>
   </div>

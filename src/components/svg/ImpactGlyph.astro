@@ -1,0 +1,106 @@
+---
+// Micro-diagramas de las tres cards de "Impacto en hospitales y PROA".
+// Igual que ProcessGlyph, cada uno dibuja el costo que la card describe y no
+// un icono decorativo: el tramo de horas que se consume antes de llegar a una
+// sola conclusión, la ventana de anticipación que se pierde entre que una
+// señal empieza y se ve, y la evidencia que falta para poder priorizar.
+//
+// Los tres comparten viewBox y grosor de trazo para que se lean como una
+// familia, y usan verde solo en lo poco que sí está disponible. El contraste
+// entre lo apagado y lo verde es el mensaje.
+//
+// La cuadrícula de "decisiones" rima a propósito con la matriz de
+// AntibiogramGrid: acá las celdas están casi todas vacías, y en la sección de
+// la plataforma la misma forma aparece completa.
+interface Props {
+  kind: 'tiempo' | 'vigilancia' | 'decisiones';
+  class?: string;
+}
+
+const { kind, class: className = 'impact-glyph' } = Astro.props;
+
+// Evidencia disponible: 4 celdas de 18. Celdas grandes y pocas, porque a
+// 208px de ancho una cuadrícula más densa se lee como ruido y no como
+// cobertura parcial. La dispersión es intencional, para que no forme patrón.
+const conEvidencia = new Set(['0-1', '2-0', '3-2', '5-1']);
+const celdas = Array.from({ length: 3 }, (_, fila) =>
+  Array.from({ length: 6 }, (_, col) => ({
+    x: 4 + col * 16,
+    y: 6 + fila * 16,
+    evidencia: conEvidencia.has(`${col}-${fila}`),
+  })),
+).flat();
+---
+
+<svg
+  class={className}
+  viewBox="0 0 208 56"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.4"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false">
+  {kind === 'tiempo' && (
+    <g>
+      {/* El tramo de consolidación manual se come casi todo el ancho */}
+      <rect x="4" y="17" width="142" height="17" rx="4" stroke-opacity=".4" />
+      <path
+        d="M8 34L20 17M22 34L34 17M36 34L48 17M50 34L62 17M64 34L76 17M78 34L90 17M92 34L104 17M106 34L118 17M120 34L132 17M134 34L146 17"
+        stroke-opacity=".18"
+      />
+      {/* Cada marca es una hora que se va en ese tramo */}
+      <path
+        d="M8 41v6M20 41v6M32 41v6M44 41v6M56 41v6M68 41v6M80 41v6M92 41v6M104 41v6M116 41v6M128 41v6M140 41v6"
+        stroke-opacity=".3"
+      />
+      {/* Y al final aparece una sola conclusión útil */}
+      <path d="M156 26H182" stroke-opacity=".45" />
+      <path d="M177 21l5 5-5 5" stroke-opacity=".45" />
+      <circle cx="196" cy="26" r="7.4" stroke="var(--green)" stroke-opacity=".28" />
+      <circle cx="196" cy="26" r="3.6" fill="var(--green)" stroke="none" />
+    </g>
+  )}
+
+  {kind === 'vigilancia' && (
+    <g>
+      {/* Acá la señal ya venía subiendo */}
+      <path d="M68 8V46" stroke-dasharray="3 4" stroke-opacity=".38" />
+      {/* Y recién acá se detecta */}
+      <path d="M146 24V46" stroke-opacity=".45" />
+      <path d="M4 46L40 45L68 41L104 30L146 19L196 11" />
+      <circle cx="68" cy="41" r="2.8" stroke-opacity=".55" />
+      <circle cx="146" cy="19" r="7.2" stroke="var(--green)" stroke-opacity=".28" />
+      <circle cx="146" cy="19" r="3.4" fill="var(--green)" stroke="none" />
+      {/* La ventana de anticipación es todo lo que queda entre ambos puntos */}
+      <g stroke-opacity=".4">
+        <path d="M68 51H146" />
+        <path d="M73 47.5L68 51l5 3.5" />
+        <path d="M141 47.5L146 51l-5 3.5" />
+      </g>
+    </g>
+  )}
+
+  {kind === 'decisiones' && (
+    <g>
+      {celdas.map((celda) => (
+        celda.evidencia ? (
+          <rect x={celda.x} y={celda.y} width="12" height="12" rx="2.5" fill="var(--green)" stroke="none" />
+        ) : (
+          <rect x={celda.x} y={celda.y} width="12" height="12" rx="2.5" stroke-dasharray="3 3" stroke-opacity=".24" />
+        )
+      ))}
+      {/* Sin evidencia suficiente ninguna de las dos rutas queda priorizada,
+          así que las dos se dibujan con el mismo peso */}
+      <circle cx="120" cy="28" r="3.4" stroke-opacity=".5" />
+      <g stroke-opacity=".32">
+        <path d="M123.4 28H136" />
+        <path d="M136 28c14 0 12-14 26-14" />
+        <path d="M136 28c14 0 12 14 26 14" />
+        <path d="M156 8l6 6-6 6" />
+        <path d="M156 36l6 6-6 6" />
+      </g>
+    </g>
+  )}
+</svg>

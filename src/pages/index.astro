@@ -6,6 +6,9 @@ import FragmentFlow from '../components/svg/FragmentFlow.astro';
 import AntibiogramGrid from '../components/svg/AntibiogramGrid.astro';
 import ProcessGlyph from '../components/svg/ProcessGlyph.astro';
 import InstitutionalStrip from '../components/InstitutionalStrip.astro';
+import ImpactGlyph from '../components/svg/ImpactGlyph.astro';
+import IntelligenceGlyph from '../components/svg/IntelligenceGlyph.astro';
+import ChileFlag from '../components/svg/ChileFlag.astro';
 
 const title = 'BIOHI | Inteligencia Microbiológica para Hospitales';
 const description = 'BIOHI transforma datos microbiológicos en información útil para vigilancia, equipos PROA y gestión hospitalaria mediante integración, normalización y analítica multicentro.';
@@ -49,10 +52,10 @@ const metrics = [
 ];
 
 const problemCards = [
-  ['Tiempo', 'Horas de consolidación manual', 'Buscar, limpiar y homologar información retrasa la llegada a una conclusión útil.'],
-  ['Vigilancia', 'Menor capacidad de anticipación', 'Las señales relevantes pueden aparecer tarde cuando cada fuente se analiza por separado.'],
-  ['Decisiones', 'Menos evidencia local disponible', 'PROA necesita información actualizada y contextualizada para priorizar su revisión.'],
-];
+  ['Tiempo', 'tiempo', 'Horas de consolidación manual', 'Buscar, limpiar y homologar información retrasa la llegada a una conclusión útil.'],
+  ['Vigilancia', 'vigilancia', 'Menor capacidad de anticipación', 'Las señales relevantes pueden aparecer tarde cuando cada fuente se analiza por separado.'],
+  ['Decisiones', 'decisiones', 'Menos evidencia local disponible', 'PROA necesita información actualizada y contextualizada para priorizar su revisión.'],
+] as const;
 
 const processSteps = [
   { label: 'Datos', glyph: 'datos' as const },
@@ -75,10 +78,28 @@ const operationalBenefits = [
   ['Reportes y seguimiento', 'Facilitar reuniones PROA, evaluación institucional y revisión periódica.'],
 ];
 
+const intelligenceLayer = [
+  [
+    'copiloto',
+    'Copiloto IA',
+    'Diseñado para responder preguntas en lenguaje natural sobre datos ya validados, con el universo consultado, el período y la trazabilidad del resultado siempre a la vista.',
+  ],
+  [
+    'alertas',
+    'Alertas tempranas',
+    'Cuando la resistencia de una combinación cruza el umbral que definió el equipo PROA, la alerta llega con microorganismo, antibiótico, establecimiento, período, valor actual y el motivo que la disparó.',
+  ],
+  [
+    'prediccion',
+    'Modelo predictivo',
+    'Diseñado para proyectar tendencias de resistencia sobre la serie histórica consolidada, y para entregar sus límites junto con el resultado en vez de una conclusión automática.',
+  ],
+] as const;
+
 const differentiators = [
   ['Multicentro', 'Preparado para consolidar información de más de una institución bajo un modelo común.'],
   ['Agnóstico al proveedor', 'Diseñado para integrarse sin depender de un único fabricante o ecosistema.'],
-  ['Orientado a inteligencia', 'No se limita a almacenar: estructura datos para vigilancia, análisis y gestión.'],
+  ['Trazable por diseño', 'Cada carga y cada consulta queda en bitácora, y cada indicador muestra el universo con que fue calculado.'],
 ];
 ---
 
@@ -108,11 +129,16 @@ const differentiators = [
     </nav>
   </header>
 
+  <div class="brand-intro" data-brand-intro aria-hidden="true">
+    <div class="brand-intro-backdrop" data-intro-backdrop></div>
+    <LogoAnimated />
+  </div>
+
   <main id="contenido">
     <section id="inicio" class="hero section-grid" aria-labelledby="hero-title">
       <AgarField />
       <div class="container hero-grid">
-        <div class="hero-copy" data-reveal>
+        <div class="hero-copy">
           <p class="eyebrow"><span></span> Inteligencia microbiológica</p>
           <h1 id="hero-title">Transformamos datos microbiológicos en <em>inteligencia para actuar a tiempo.</em></h1>
           <p class="hero-lead">BIOHI integra, normaliza y analiza datos microbiológicos de distintos establecimientos para convertir información dispersa en evidencia útil para vigilancia, equipos PROA y gestión hospitalaria.</p>
@@ -122,8 +148,18 @@ const differentiators = [
           </div>
         </div>
 
-        <div class="hero-brandmark">
-          <LogoAnimated />
+        <div class="hero-mascot">
+          <img
+            src="/biohi-mascot.webp"
+            alt="Mascota de BIOHI con bata de laboratorio"
+            width="1024"
+            height="1536"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
+
+        <div class="hero-signals">
           <div class="signal-row">
             <div><span>01</span><strong>Integrar</strong></div>
             <div><span>02</span><strong>Normalizar</strong></div>
@@ -222,9 +258,10 @@ const differentiators = [
             <h3>Cuando la información no está integrada, el costo también es operativo.</h3>
           </div>
           <div class="problem-card-grid">
-            {problemCards.map(([tag, heading, copy], index) => (
+            {problemCards.map(([tag, glyph, heading, copy], index) => (
               <article class="problem-card" data-reveal data-delay={String(index * 70)}>
                 <span>{tag}</span>
+                <ImpactGlyph kind={glyph} />
                 <h4>{heading}</h4>
                 <p>{copy}</p>
               </article>
@@ -303,9 +340,22 @@ const differentiators = [
         <div class="differentiation-block">
           <div class="subsection-heading" data-reveal>
             <p class="subeyebrow">Diferenciación</p>
-            <h3>Una plataforma diseñada para conectar capas que hoy funcionan separadas.</h3>
-            <p>BIOHI no busca competir únicamente como software de laboratorio ni como un dashboard adicional. Su propuesta combina integración, normalización, vigilancia, analítica, trazabilidad y apoyo a PROA sobre una misma base.</p>
+            <h3>No es un repositorio con dashboards. Es una capa de inteligencia sobre los datos consolidados.</h3>
+            <p>Con los datos de distintos establecimientos bajo un modelo común, BIOHI está diseñado para responder preguntas en lenguaje natural, avisar cuando una resistencia cruza el umbral que definió el propio equipo PROA y proyectar tendencias sobre la serie histórica consolidada.</p>
           </div>
+          <div class="intelligence-panel" data-reveal>
+            <p class="subeyebrow">Capa de inteligencia</p>
+            <div class="intelligence-grid">
+              {intelligenceLayer.map(([glyph, heading, copy]) => (
+                <article class="intelligence-item">
+                  <IntelligenceGlyph kind={glyph} />
+                  <h4>{heading}</h4>
+                  <p>{copy}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
           <div class="differentiator-grid">
             {differentiators.map(([heading, copy], index) => (
               <article data-reveal data-delay={String(index * 70)}><span>0{index + 1}</span><h4>{heading}</h4><p>{copy}</p></article>
@@ -323,7 +373,7 @@ const differentiators = [
           <p class="eyebrow"><span></span> Contacto</p>
           <h2 id="contact-title">Convirtamos datos microbiológicos en inteligencia útil.</h2>
           <p>Si formas parte de un hospital, equipo PROA, laboratorio, institución de salud u organización interesada en innovación aplicada a resistencia antimicrobiana, conversemos.</p>
-          <div class="contact-note"><span>CL</span><p><strong>Desarrollado en Chile.</strong><br />Con una visión multicentro para el ecosistema de salud.</p></div>
+          <div class="contact-note"><span><ChileFlag class="flag-cl-badge" /></span><p><strong>Desarrollado en Chile.</strong><br />Con una visión multicentro para el ecosistema de salud.</p></div>
           <div class="social-status">
             <small>Síguenos</small>
             <a href="https://www.instagram.com/biohi.cl/" target="_blank" rel="noreferrer" aria-label="Instagram de BIOHI">Instagram ↗</a>
@@ -342,8 +392,8 @@ const differentiators = [
             <label>Correo<input type="email" name="correo" autocomplete="email" required placeholder="nombre@institucion.cl" /></label>
           </div>
           <label>Mensaje<textarea name="mensaje" rows="5" required placeholder="Cuéntanos brevemente en qué podemos colaborar"></textarea></label>
-          <button class="button form-submit" type="submit">Enviar mensaje <span aria-hidden="true">↗</span></button>
-          <p class="form-privacy">Tus datos no se almacenan en esta versión demostrativa.</p>
+          <button class="button form-submit" type="submit">Redactar el correo <span aria-hidden="true">↗</span></button>
+          <p class="form-privacy">Se abre tu propio cliente de correo con el mensaje ya redactado. Los datos no pasan por ningún servidor de BIOHI ni por un servicio de terceros: el correo lo envías tú.</p>
           <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
         </form>
       </div>
@@ -360,7 +410,8 @@ const differentiators = [
   </footer>
 
   <script>
-    document.documentElement.classList.add('js');
+    const pageRoot = document.documentElement;
+    pageRoot.classList.add('js', 'intro-active');
 
     const menuButton = document.querySelector('[data-menu-toggle]');
     const mobileMenu = document.querySelector('[data-mobile-menu]');
@@ -405,112 +456,104 @@ const differentiators = [
       revealItems.forEach((item) => item.classList.add('is-visible'));
     }
 
-    // ── Traspaso de marca: el logotipo del hero viaja al slot del navbar ──
-    // El destino depende del layout, asi que se mide y se publica como
-    // custom properties; la progresion la lleva el scroll timeline nativo.
-    const brandmark = document.querySelector<HTMLElement>('.brandmark');
+    // ── Introduccion de marca: carga centrada → navbar ───────────────────
+    const brandIntro = document.querySelector<HTMLElement>('[data-brand-intro]');
+    const introBackdrop = document.querySelector<HTMLElement>('[data-intro-backdrop]');
+    const introMark = brandIntro?.querySelector<HTMLElement>('.brandmark');
     const headerLogo = document.querySelector<HTMLElement>('.brand img');
-    const heroSection = document.querySelector<HTMLElement>('.hero');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const nativeScrollTimeline = CSS.supports('(animation-timeline: scroll()) and (animation-range: 0% 100%)');
+    let landingAnimation: Animation | undefined;
+    let introAnimations: Animation[] = [];
+    let introFinished = false;
 
-    let flightRange = 0;
-
-    const measureFlight = () => {
-      if (!brandmark || !headerLogo || !heroSection) return;
-
-      // getBoundingClientRect incluiria la transformacion en curso, asi que
-      // se suspende la animacion para leer la posicion de reposo.
-      const previousAnimation = brandmark.style.animationName;
-      brandmark.style.animationName = 'none';
-      brandmark.style.translate = 'none';
-      brandmark.style.scale = 'none';
-
-      const mark = brandmark.getBoundingClientRect();
-      const target = headerLogo.getBoundingClientRect();
-
-      brandmark.style.removeProperty('animation-name');
-      brandmark.style.removeProperty('translate');
-      brandmark.style.removeProperty('scale');
-      if (previousAnimation) brandmark.style.animationName = previousAnimation;
-
-      if (!mark.width || !target.width) return;
-
-      // El vuelo termina antes de que el hero salga de pantalla, para que la
-      // marca no quede recortada por su overflow.
-      flightRange = Math.max(220, heroSection.offsetHeight * 0.62);
-
-      // El encabezado es fixed: su posicion en viewport es constante. Sumar
-      // flightRange compensa el desplazamiento natural del hero al scrollear.
-      const root = document.documentElement;
-      root.style.setProperty('--fly-x', `${target.left - mark.left}px`);
-      root.style.setProperty('--fly-y', `${target.top - (mark.top + window.scrollY) + flightRange}px`);
-      root.style.setProperty('--fly-scale', String(target.width / mark.width));
-      root.style.setProperty('--fly-range', `${flightRange}px`);
-      root.classList.add('flight-ready');
+    const skipKeys = new Set(['ArrowDown', 'PageDown', 'End', ' ', 'Spacebar']);
+    const accelerateIntro = (event?: Event) => {
+      if (event instanceof KeyboardEvent && !skipKeys.has(event.key)) return;
+      landIntro(true);
     };
 
-    // Replica del vuelo por scroll listener, coalescida en rAF. Solo escribe
-    // translate/scale/opacity para no salir del compositor.
-    let fallbackRunning = false;
-    const startFlightFallback = () => {
-      if (!brandmark || !headerLogo || fallbackRunning) return;
-      fallbackRunning = true;
-      document.documentElement.classList.add('flight-js');
-
-      let ticking = false;
-      const applyFlight = () => {
-        ticking = false;
-        if (!flightRange) return;
-        const progress = Math.min(1, Math.max(0, window.scrollY / flightRange));
-        const styles = getComputedStyle(document.documentElement);
-        const flyX = parseFloat(styles.getPropertyValue('--fly-x')) || 0;
-        const flyY = parseFloat(styles.getPropertyValue('--fly-y')) || 0;
-        const flyScale = parseFloat(styles.getPropertyValue('--fly-scale')) || 1;
-
-        // Mismo arco que los keyframes bh-fly: la Y avanza antes que la X,
-        // para no cruzar por encima del titular.
-        const alongX = Math.pow(progress, 1.9);
-        const alongY = 1 - Math.pow(1 - progress, 1.7);
-
-        brandmark.style.translate = `${flyX * alongX}px ${flyY * alongY}px`;
-        brandmark.style.scale = String(1 + (flyScale - 1) * progress);
-        brandmark.style.opacity = String(1 - Math.min(1, Math.max(0, (progress - 0.42) / 0.36)));
-        headerLogo.style.opacity = String(Math.min(1, Math.max(0, (progress - 0.44) / 0.38)));
-      };
-      const queueFlight = () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(applyFlight);
-      };
-      window.addEventListener('scroll', queueFlight, { passive: true });
-      applyFlight();
+    const removeIntroListeners = () => {
+      window.removeEventListener('wheel', accelerateIntro);
+      window.removeEventListener('touchmove', accelerateIntro);
+      window.removeEventListener('scroll', accelerateIntro);
+      window.removeEventListener('keydown', accelerateIntro);
     };
 
-    if (brandmark && headerLogo && heroSection && !reduceMotion.matches) {
-      measureFlight();
-      window.addEventListener('resize', measureFlight);
+    const finishIntro = () => {
+      if (introFinished) return;
+      introFinished = true;
+      removeIntroListeners();
+      pageRoot.classList.remove('intro-active', 'intro-landing', 'intro-skip');
+      pageRoot.classList.add('intro-complete');
+      brandIntro?.remove();
+    };
 
-      // CSS.supports puede informar soporte y aun asi dejar el timeline
-      // inactivo: pasa en navegadores embebidos. No basta con detectar el
-      // feature, hay que comprobar que el timeline efectivamente corra.
-      const timelineRuns = () => {
-        const flight = brandmark.getAnimations().find((animation) => (
-          (animation as CSSAnimation).animationName === 'bh-fly'
-        ));
-        return Boolean(flight?.timeline && flight.timeline.currentTime !== null);
-      };
-
-      if (!nativeScrollTimeline || !timelineRuns()) {
-        // Firefox no lo implementa; el resto llega aqui si el timeline no corre.
-        startFlightFallback();
-      } else {
-        // Red de seguridad por si el timeline tarda un frame en activarse.
-        // setTimeout y no rAF: rAF se congela con la pestaña en segundo plano.
-        window.setTimeout(() => {
-          if (!timelineRuns()) startFlightFallback();
-        }, 400);
+    function landIntro(fast = false) {
+      if (introFinished || !brandIntro || !introMark || !headerLogo) {
+        finishIntro();
+        return;
       }
+
+      if (landingAnimation) {
+        if (fast) introAnimations.forEach((animation) => { animation.playbackRate = 4; });
+        return;
+      }
+
+      if (fast) pageRoot.classList.add('intro-skip');
+
+      const mark = introMark.getBoundingClientRect();
+      const target = headerLogo.getBoundingClientRect();
+      if (!mark.width || !target.width) {
+        finishIntro();
+        return;
+      }
+
+      const duration = reduceMotion.matches ? 1 : fast ? 280 : 820;
+      const transform = `translate3d(${target.left - mark.left}px, ${target.top - mark.top}px, 0) scale(${target.width / mark.width})`;
+      pageRoot.classList.add('intro-landing');
+
+      landingAnimation = introMark.animate([
+        { transform: 'translate3d(0, 0, 0) scale(1)' },
+        { transform },
+      ], {
+        duration,
+        easing: 'cubic-bezier(.22,.72,.18,1)',
+        fill: 'forwards',
+      });
+
+      const animations: Animation[] = [landingAnimation];
+      if (introBackdrop) {
+        animations.push(introBackdrop.animate([
+          { opacity: 1 },
+          { opacity: 0 },
+        ], {
+          duration: Math.max(180, duration * .72),
+          delay: duration * .18,
+          easing: 'ease-out',
+          fill: 'forwards',
+        }));
+      }
+
+      introAnimations = animations;
+      Promise.all(animations.map((animation) => animation.finished)).then(finishIntro, finishIntro);
+    }
+
+    if (!brandIntro || !introMark || !headerLogo) {
+      finishIntro();
+    } else if (reduceMotion.matches) {
+      landIntro(true);
+    } else {
+      window.addEventListener('wheel', accelerateIntro, { passive: true });
+      window.addEventListener('touchmove', accelerateIntro, { passive: true });
+      window.addEventListener('scroll', accelerateIntro, { passive: true });
+      window.addEventListener('keydown', accelerateIntro);
+
+      const pageLoaded = document.readyState === 'complete'
+        ? Promise.resolve()
+        : new Promise<void>((resolve) => window.addEventListener('load', () => resolve(), { once: true }));
+      const logoDrawn = new Promise<void>((resolve) => window.setTimeout(resolve, 3500));
+      Promise.all([pageLoaded, logoDrawn]).then(() => landIntro());
+      window.setTimeout(() => landIntro(true), 8000);
     }
 
     const navLinks = document.querySelectorAll<HTMLAnchorElement>('.desktop-nav a');
@@ -528,8 +571,15 @@ const differentiators = [
     }, { rootMargin: '-38% 0px -54%' });
     observedSections.forEach((section) => activeObserver.observe(section));
 
+    // El sitio es estatico, asi que no hay servidor propio que despache el
+    // correo. El formulario compone un mailto y lo entrega al cliente del
+    // visitante: los datos nunca pasan por un tercero, pero el envio final
+    // lo hace la persona. Por eso el estado siempre deja la direccion a la
+    // vista, que es el respaldo si no tiene cliente configurado.
+    const BUZON = '123biohi@gmail.com';
     const contactForm = document.querySelector<HTMLFormElement>('#contact-form');
     const formStatus = document.querySelector<HTMLElement>('#form-status');
+
     contactForm?.addEventListener('submit', (event) => {
       event.preventDefault();
       if (!contactForm.checkValidity()) {
@@ -537,7 +587,35 @@ const differentiators = [
         if (formStatus) formStatus.textContent = 'Revisa los campos obligatorios antes de continuar.';
         return;
       }
-      if (formStatus) formStatus.textContent = 'El canal de envío institucional aún no está conectado. Tus datos no fueron enviados; BIOHI lo habilitará próximamente.';
+
+      const datos = new FormData(contactForm);
+      const campo = (nombre: string) => String(datos.get(nombre) ?? '').trim();
+
+      const asunto = `Contacto BIOHI · ${campo('institucion')}`;
+      const cuerpo = [
+        `Nombre: ${campo('nombre')}`,
+        `Institución: ${campo('institucion')}`,
+        `Cargo: ${campo('cargo')}`,
+        `Correo: ${campo('correo')}`,
+        '',
+        campo('mensaje'),
+      ].join('\n');
+
+      const enlace = `mailto:${BUZON}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+
+      // Varios clientes truncan el mailto pasados unos 2000 caracteres, y un
+      // correo cortado a la mitad es peor que un aviso claro.
+      if (enlace.length > 1900) {
+        if (formStatus) {
+          formStatus.textContent = `El mensaje es muy largo para abrirlo en tu cliente de correo. Acórtalo o escríbenos directamente a ${BUZON}.`;
+        }
+        return;
+      }
+
+      if (formStatus) {
+        formStatus.textContent = `Se abrirá tu cliente de correo con el mensaje listo para enviar a ${BUZON}. Si no se abre, escríbenos directamente a esa dirección.`;
+      }
+      window.location.href = enlace;
     });
   </script>
 </BaseLayout>

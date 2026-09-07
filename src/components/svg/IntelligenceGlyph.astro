@@ -1,0 +1,104 @@
+---
+// Glifos de la capa de inteligencia, en la sección de diferenciación. Igual
+// que ProcessGlyph e ImpactGlyph, cada uno dibuja el mecanismo documentado y
+// no un icono de IA genérico.
+//
+// Las tres capacidades vienen del catálogo de funcionalidades del proyecto:
+// consulta asistida e IA explicable (F08), alertas tempranas y priorización
+// PROA (F05) y la capa predictiva que evalúa el spike de factibilidad.
+//
+// El glifo de "prediccion" dibuja la banda de incertidumbre abriéndose a
+// propósito: la proyección entrega sus límites junto con el resultado, que es
+// justamente lo que la documentación pide en vez de una conclusión automática.
+interface Props {
+  kind: 'copiloto' | 'alertas' | 'prediccion';
+  class?: string;
+}
+
+const { kind, class: className = 'intelligence-glyph' } = Astro.props;
+
+// Serie de la combinación vigilada: la última barra es la que cruza el
+// umbral configurado y dispara la alerta.
+const barras = [
+  { x: 8, alto: 12 },
+  { x: 28, alto: 16 },
+  { x: 48, alto: 14 },
+  { x: 68, alto: 20 },
+  { x: 88, alto: 24 },
+  { x: 108, alto: 34, cruza: true },
+];
+---
+
+<svg
+  class={className}
+  viewBox="0 0 208 56"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.4"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false">
+  {kind === 'copiloto' && (
+    <g>
+      {/* La pregunta se escribe en lenguaje natural */}
+      <rect x="4" y="6" width="200" height="18" rx="9" stroke-opacity=".32" />
+      <path d="M14 11v8" stroke="var(--green)" stroke-opacity=".85" />
+      <path d="M24 15h50M80 15h32M118 15h46" stroke-opacity=".26" />
+      <path d="M104 28v6" stroke-opacity=".3" />
+      <path d="M100 30l4 4 4-4" stroke-opacity=".3" />
+      {/* La respuesta queda citada: la regla marca de dónde sale */}
+      <path d="M4 38V52" stroke="var(--green)" stroke-opacity=".5" />
+      <path d="M14 42h104" stroke-opacity=".45" />
+      <path d="M14 49h72" stroke-opacity=".26" />
+      {/* Y el dato que la sostiene queda a la vista, con las mismas barras
+          rellenas que usa el glifo de alertas */}
+      <g fill="currentColor" fill-opacity=".3" stroke="none">
+        <rect x="136" y="44" width="8" height="8" rx="2" />
+        <rect x="148" y="40" width="8" height="12" rx="2" />
+        <rect x="160" y="43" width="8" height="9" rx="2" />
+        <rect x="172" y="36" width="8" height="16" rx="2" />
+        <rect x="184" y="41" width="8" height="11" rx="2" />
+      </g>
+      <path d="M132 53h64" stroke-opacity=".2" />
+    </g>
+  )}
+
+  {kind === 'alertas' && (
+    <g>
+      {/* El umbral lo define el propio equipo PROA */}
+      <path d="M4 20H150" stroke-dasharray="4 4" stroke-opacity=".55" />
+      <path d="M4 48H150" stroke-opacity=".28" />
+      {barras.map((barra) => (
+        <rect
+          x={barra.x}
+          y={48 - barra.alto}
+          width="10"
+          height={barra.alto}
+          rx="2.5"
+          fill={barra.cruza ? 'var(--green)' : 'currentColor'}
+          fill-opacity={barra.cruza ? undefined : '.24'}
+          stroke="none"
+        />
+      ))}
+      {/* Y cuando una combinación lo cruza, la alerta llega con su motivo */}
+      <g stroke-opacity=".26">
+        <path d="M164 22h36M164 30h24M164 38h32" />
+      </g>
+      <path d="M156 18v24" stroke-opacity=".16" />
+    </g>
+  )}
+
+  {kind === 'prediccion' && (
+    <g>
+      <path d="M4 52H204" stroke-opacity=".2" />
+      {/* Serie histórica consolidada */}
+      <path d="M4 44L28 41L52 43L76 36L100 30" />
+      <path d="M100 8V52" stroke-dasharray="3 4" stroke-opacity=".28" />
+      {/* La banda se abre porque la proyección entrega su incertidumbre */}
+      <path d="M100 30L200 13L200 41Z" fill="var(--green)" fill-opacity=".1" stroke="none" />
+      <path d="M100 30L200 20" stroke="var(--green)" stroke-dasharray="4 4" stroke-opacity=".6" />
+      <circle cx="100" cy="30" r="3" fill="var(--green)" stroke="none" />
+    </g>
+  )}
+</svg>
