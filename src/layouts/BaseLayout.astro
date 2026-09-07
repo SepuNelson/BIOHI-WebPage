@@ -1,5 +1,6 @@
 ---
 import '@fontsource-variable/manrope';
+import manropeLatinUrl from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
 import '../styles/global.css';
 
 interface Props {
@@ -43,6 +44,7 @@ const socialImage = new URL('/og.png', publicOrigin);
     <meta name="twitter:image" content={socialImage} />
     <meta name="twitter:image:alt" content="BIOHI — Inteligencia microbiológica para actuar a tiempo" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href={manropeLatinUrl} as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
     {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
